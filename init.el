@@ -47,13 +47,18 @@
   "Does something with TARGET and ALIST."
   (position-if (lambda (s) (string= s target)) alist))
 
+(defun initialize-terminal-buffer ()
+  (ansi-term "/bin/bash" mini-term-name)
+  (local-set-key (kbd "C-x w") 'kill-ring-save)
+  (local-set-key (kbd "C-x y") 'yank))
+
 (defun get-terminal-buffer ()
   "Does something."
   (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
          (term-index (find-string-index actual-term-name buffer-names)))
     (if term-index
         (switch-to-buffer (nth term-index (buffer-list)))
-      (ansi-term "/bin/bash" mini-term-name))))
+      (initialize-terminal-buffer))))
 
 (defun open-terminal ()
   (let ((new-window (split-window (frame-root-window))))
@@ -91,7 +96,6 @@
 
 (defun initiate-hooks ()
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  ;; (add-hook 'prog-mode-hook 'smartparens-mode)
   (add-hook 'prog-mode-hook (lambda ()
                               (if (not (eq major-mode 'c++-mode))
                                   (smartparens-mode 1))))
@@ -104,7 +108,7 @@
   (add-hook 'org-mode-hook (lambda ()
                              (visual-line-mode 1)))
   (add-hook 'typescript-mode-hook #'lsp)
-  (add-hook 'latex-mode 'visual-line-mode)
+  (add-hook 'latex-mode-hook 'visual-line-mode)
   (add-hook 'racket-mode-hook (lambda () (flycheck-mode -1)))
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (add-hook 'emacs-lisp-mode-hook (lambda ()
