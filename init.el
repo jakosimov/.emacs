@@ -28,10 +28,13 @@
 (require 'projectile)
 (require 'doom-modeline)
 (require 'ace-window)
+(require 'magit)
 
 (defvar mini-term-name "Terminal")
 (defvar actual-term-name (concat "*" mini-term-name "*"))
 (defvar term-mode-line-enabled nil)
+(defvar term-width -60)
+(defvar term-height -15)
 
 (defun position-if-helper (alist i pred)
   (if (null alist)
@@ -60,21 +63,35 @@
         (switch-to-buffer (nth term-index (buffer-list)))
       (initialize-terminal-buffer))))
 
-(defun open-terminal ()
-  (let ((new-window (split-window (frame-root-window))))
-    (window-resize new-window -10)
+(defun create-new-window (is-horizontal)
+  (let* ((size (if is-horizontal
+                   term-height
+                 term-width))
+         (side (not is-horizontal)))
+         (split-window (frame-root-window) size side)))
+
+(defun open-terminal (is-horizontal)
+  (let ((new-window (create-new-window is-horizontal)))
     (select-window new-window)
     (get-terminal-buffer)
     (if (not term-mode-line-enabled)
 	(setq mode-line-format nil))))
 
-(defun toggle-terminal ()
-  "Toggle a small terminal window."
-  (interactive)
+(defun toggle-terminal (is-horizontal)
   (let ((term-window (get-buffer-window actual-term-name)))
     (if term-window
         (delete-window term-window)
-      (open-terminal))))
+      (open-terminal is-horizontal))))
+
+(defun toggle-terminal-horizontal ()
+  "Toggle a small horizontal terminal window."
+  (interactive)
+  (toggle-terminal t))
+
+(defun toggle-terminal-vertical ()
+  "Toggle a small vertical terminal window."
+  (interactive)
+  (toggle-terminal nil))
 
 (defun customize-emacs ()
   "Opens the custom.el file."
@@ -115,7 +132,8 @@
 				    (local-set-key (kbd "C-c C-e") 'eval-buffer))))
 
 (defun set-global-keys ()
-  (global-set-key (kbd "C-c j") 'toggle-terminal)
+  (global-set-key (kbd "C-c j") 'toggle-terminal-horizontal)
+  (global-set-key (kbd "C-c C-j") 'toggle-terminal-vertical)
   (global-set-key (kbd "C-j") 'newline-and-indent)
   (global-set-key (kbd "C-'") 'comment-line)
   (global-set-key (kbd "C-z") nil)

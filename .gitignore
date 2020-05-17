@@ -5,3 +5,4 @@ elpa/
 .cache/
 projectile-bookmarks.eld
 transient/
+flycheck_init.el
