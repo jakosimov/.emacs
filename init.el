@@ -9,17 +9,14 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "28caf31770f88ffaac6363acfda5627019cac57ea252ceb2d41d98df6d87e240" "669e02142a56f63861288cc585bee81643ded48a19e36bfdf02b66d745bcc626" "332fcf3c7208aca9fab65d54203f78a242482e7fd65f5725a2482c20b1730732" "d91ef4e714f05fff2070da7ca452980999f5361209e679ee988e3c432df24347" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" "a7051d761a713aaf5b893c90eaba27463c791cd75d7257d3a8e66b0c8c346e77" default)))
+    ("76c5b2592c62f6b48923c00f97f74bcb7ddb741618283bdb2be35f3c0e1030e3" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "28caf31770f88ffaac6363acfda5627019cac57ea252ceb2d41d98df6d87e240" "669e02142a56f63861288cc585bee81643ded48a19e36bfdf02b66d745bcc626" "332fcf3c7208aca9fab65d54203f78a242482e7fd65f5725a2482c20b1730732" "d91ef4e714f05fff2070da7ca452980999f5361209e679ee988e3c432df24347" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" "a7051d761a713aaf5b893c90eaba27463c791cd75d7257d3a8e66b0c8c346e77" default)))
  '(package-selected-packages
    (quote
-    (doom-modeline rust-mode magit pretty-mode treemacs mood-line racket-mode lsp-haskell atom-one-dark-theme web-mode projectile company-lsp lsp-ui yasnippet typescript-mode dracula-theme org-bullets lsp-mode haskell-mode smartparens company flycheck ivy))))
+    (zenburn-theme doom-modeline rust-mode magit pretty-mode treemacs mood-line racket-mode lsp-haskell atom-one-dark-theme web-mode projectile company-lsp lsp-ui yasnippet typescript-mode dracula-theme org-bullets lsp-mode haskell-mode smartparens company flycheck ivy))))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#282a36" :foreground "#f8f8f2" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 100 :width normal :foundry "PfEd" :family "DejaVu Sans Mono")))))
+;; Yoga:
+;;   FF: Source Code Pro
+;;   Height: 102
 
 (require 'smartparens-config)
 (require 'lsp-mode)
