@@ -6,3 +6,6 @@ elpa/
 projectile-bookmarks.eld
 transient/
 flycheck_init.el
+games/
+semanticdb/
+.lsp-session-v1
