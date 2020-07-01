@@ -13,7 +13,7 @@
     ("76c5b2592c62f6b48923c00f97f74bcb7ddb741618283bdb2be35f3c0e1030e3" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "28caf31770f88ffaac6363acfda5627019cac57ea252ceb2d41d98df6d87e240" "669e02142a56f63861288cc585bee81643ded48a19e36bfdf02b66d745bcc626" "332fcf3c7208aca9fab65d54203f78a242482e7fd65f5725a2482c20b1730732" "d91ef4e714f05fff2070da7ca452980999f5361209e679ee988e3c432df24347" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" "a7051d761a713aaf5b893c90eaba27463c791cd75d7257d3a8e66b0c8c346e77" default)))
  '(package-selected-packages
    (quote
-    (lsp-haskell company-lsp lsp-ui lsp-mode hasky-stack cmake-ide cmake-project rtags yaml-mode zenburn-theme doom-modeline rust-mode magit pretty-mode treemacs mood-line racket-mode atom-one-dark-theme web-mode projectile yasnippet typescript-mode dracula-theme org-bullets haskell-mode smartparens company flycheck ivy))))
+    (lsp-ivy lsp-treemacs lsp-haskell company-lsp lsp-ui lsp-mode hasky-stack cmake-ide cmake-project rtags yaml-mode zenburn-theme doom-modeline rust-mode magit pretty-mode treemacs mood-line racket-mode atom-one-dark-theme web-mode projectile yasnippet typescript-mode dracula-theme org-bullets haskell-mode smartparens company flycheck ivy))))
 
 ;; Yoga:
 ;;   FF: Source Code Pro
@@ -32,7 +32,9 @@
 (defvar enable-c++-lsp 1)
 (defvar enable-haskell-lsp 1)
 
-(defun customize-emacs ()
+
+
+(defun c-emacs ()
   "Opens the custom.el file."
   (interactive)
   (find-file "~/.emacs.d/init.el"))
@@ -68,9 +70,7 @@
   (if enable-c++-lsp
       (add-hook 'c++-mode-hook 'lsp))
   (if enable-haskell-lsp
-      (add-hook 'haskell-mode-hook 'lsp))
-
-  )
+      (add-hook 'haskell-mode-hook 'lsp)))
 
 (defun set-global-keys ()
   (global-set-key (kbd "C-c j") 'toggle-terminal-horizontal)
@@ -85,10 +85,19 @@
 (defun my-lsp-setup ()
  (setq lsp-ui-doc-enable nil)
  (setq lsp-enable-symbol-highlighting nil)
+ (defvar lsp-clients-clangd-args '("-cross-file-rename"))
+ (lsp-treemacs-sync-mode 1)
  (add-hook 'lsp-mode-hook (lambda ()
                             (local-set-key (kbd "C-c d") 'lsp-find-definition)
                             (local-set-key (kbd "C-c h") 'lsp-ui-doc-show)
-                            (local-set-key (kbd "C-c r") 'lsp-ui-peek-find-references))))
+                            (local-set-key (kbd "C-c r") 'lsp-ui-peek-find-references)
+                            (local-set-key (kbd "C-c s") 'imenu)
+                            (local-set-key (kbd "C-c C-d") 'lsp-find-declaration)
+                            (local-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
+                            (local-set-key (kbd "C-c g") (lambda ()
+                                                           (interactive)
+                                                           (let ((n (buffer-size)))
+                                                             (lsp-on-change 0 n n)))))))
 
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
