@@ -11,7 +11,6 @@
 (require 'lsp-mode)
 (require 'yasnippet)
 (require 'org)
-(require 'projectile)
 (require 'doom-modeline)
 (require 'magit)
 (require 'doom-themes)
@@ -49,7 +48,6 @@
   (scroll-bar-mode -1)
   (menu-bar-mode -1) ;; The ordinary menu bar.
   (ivy-mode 1)
-  (projectile-mode +1)
   (doom-modeline-mode 1)
   (ivy-posframe-mode 1)
   (load-preferred-theme)
@@ -87,7 +85,6 @@
 (defun my-lsp-setup ()
   (defvar lsp-ui-doc-enable nil)
   (defvar lsp-clients-clangd-args '("-cross-file-rename"))
-
   (defvar company-lsp-enable-snippet nil)
   (defvar strict-python-enabled nil)
   (defvar strict-python-warnings
@@ -161,7 +158,7 @@
     ("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
  '(package-selected-packages
    (quote
-    (racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode projectile pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer))))
+    (racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
