@@ -1,23 +1,35 @@
-
-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("76c5b2592c62f6b48923c00f97f74bcb7ddb741618283bdb2be35f3c0e1030e3" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "28caf31770f88ffaac6363acfda5627019cac57ea252ceb2d41d98df6d87e240" "669e02142a56f63861288cc585bee81643ded48a19e36bfdf02b66d745bcc626" "332fcf3c7208aca9fab65d54203f78a242482e7fd65f5725a2482c20b1730732" "d91ef4e714f05fff2070da7ca452980999f5361209e679ee988e3c432df24347" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "a2cde79e4cc8dc9a03e7d9a42fabf8928720d420034b66aecc5b665bbf05d4e9" "a7051d761a713aaf5b893c90eaba27463c791cd75d7257d3a8e66b0c8c346e77" default)))
- '(package-selected-packages
-   (quote
-    (lsp-ivy lsp-treemacs lsp-haskell company-lsp lsp-ui lsp-mode hasky-stack cmake-ide cmake-project rtags yaml-mode zenburn-theme doom-modeline rust-mode magit pretty-mode treemacs mood-line racket-mode atom-one-dark-theme web-mode projectile yasnippet typescript-mode dracula-theme org-bullets haskell-mode smartparens company flycheck ivy))))
 
 ;; Yoga:
 ;;   FF: Source Code Pro
 ;;   Height: 102
+
+(require 'doom-themes)
+
+(defvar preferred-theme 'doom-dracula)  ;; doom-one-light, dracula and doom-gruvbox is nice
+(defun load-preferred-theme ()
+  (load-theme preferred-theme t)
+  (when (eq preferred-theme 'doom-dracula)
+    (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
+    (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
+    (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold)))
+
+(tool-bar-mode -1) ;; The thing with big icons.
+(scroll-bar-mode -1)
+(menu-bar-mode -1) ;; The ordinary menu bar.
+(setq inhibit-splash-screen t)
+(doom-modeline-mode 1)
+(setq doom-themes-enable-bold t)
+(load-preferred-theme)
+
+(defun invert-theme ()
+  (interactive)
+  (if (eq preferred-theme 'doom-dracula)
+      (setq preferred-theme 'doom-one-light)
+    (setq preferred-theme 'doom-dracula))
+  (load-preferred-theme))
 
 (require 'smartparens-config)
 (require 'lsp-mode)
@@ -35,20 +47,15 @@
 
 
 (defun c-emacs ()
-  "Opens the custom.el file."
+  "Opens the init.el file."
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
 (defun initiate-modes ()
-  (load-theme 'dracula)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (menu-bar-mode -1)
   (ivy-mode 1)
   (projectile-mode +1)
   (global-flycheck-mode)
-  (global-company-mode)
-  (doom-modeline-mode 1))
+  (global-company-mode))
 
 (defun initiate-hooks ()
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -70,7 +77,9 @@
   (if enable-c++-lsp
       (add-hook 'c++-mode-hook 'lsp))
   (if enable-haskell-lsp
-      (add-hook 'haskell-mode-hook 'lsp)))
+      (add-hook 'haskell-mode-hook 'lsp))
+  (add-hook 'python-mode-hook 'lsp)
+  (add-hook 'c-mode-hook 'lsp))
 
 (defun set-global-keys ()
   (global-set-key (kbd "C-c j") 'toggle-terminal-horizontal)
@@ -79,14 +88,22 @@
   (global-set-key (kbd "C-'") 'comment-line)
   (global-set-key (kbd "C-z") nil)
   (global-set-key (kbd "C-c b") 'treemacs)
-  (global-set-key (kbd "C-x w") 'kill-ring-save)
-  (global-set-key (kbd "C-x o") 'ace-window))
+  ;; (global-set-key (kbd "C-x o") 'ace-window)
+  (global-set-key (kbd "C-x w") 'kill-ring-save))
+
+(defvar strict-python-enabled nil)
+(defvar strict-python-warnings
+  (list "E302" "E305" "W391" "E226"))
 
 (defun my-lsp-setup ()
  (setq lsp-ui-doc-enable nil)
  (setq lsp-enable-symbol-highlighting nil)
  (defvar lsp-clients-clangd-args '("-cross-file-rename"))
  (lsp-treemacs-sync-mode 1)
+ (setq lsp-enable-snippet nil)
+ (setq company-lsp-enable-snippet nil)
+ (if (not strict-python-enabled)
+     (setq lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings))
  (add-hook 'lsp-mode-hook (lambda ()
                             (local-set-key (kbd "C-c d") 'lsp-find-definition)
                             (local-set-key (kbd "C-c h") 'lsp-ui-doc-show)
@@ -103,10 +120,11 @@
 
 (setq-default typescript-indent-level 2)
 (setq-default python-indent-levels 2)
+(setq-default python-indent-offset 2)
 (setq-default truncate-lines t)
 (setq-default indent-tabs-mode nil)
 
-(setq inhibit-splash-screen t)
+
 (setq org-hide-emphasis-markers t)
 
 (with-eval-after-load 'flycheck
@@ -117,6 +135,14 @@
 (set-global-keys)
 (my-lsp-setup)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
