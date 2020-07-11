@@ -17,7 +17,7 @@
     ("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
  '(package-selected-packages
    (quote
-    (racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer))))
+    (use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -63,6 +63,7 @@
     (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold)))
 
 (defun initiate-modes ()
+  (setq confirm-kill-processes nil)
   (setq org-hide-emphasis-markers t)
   (setq ivy-posframe-display-functions-alist
         '((t . ivy-posframe-display-at-window-center)))
@@ -70,11 +71,11 @@
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
   (menu-bar-mode -1) ;; The ordinary menu bar.
-  (ivy-mode 1)
   (doom-modeline-mode 1)
-  (ivy-posframe-mode 1)
   (load-preferred-theme)
-  (doom-themes-org-config)
+  ;; (doom-themes-org-config)
+  (ivy-mode 1)
+  (ivy-posframe-mode 1)
   (global-flycheck-mode)
   (global-company-mode))
 
@@ -85,8 +86,7 @@
   (add-hook 'c-mode-common-hook (lambda ()
                                   (electric-pair-mode 1)
                                   (smartparens-mode -1)))
-  (add-hook 'org-mode-hook 'visual-line-mode)
-  (add-hook 'latex-mode-hook 'visual-line-mode)
+  (add-hook 'text-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (add-hook 'emacs-lisp-mode-hook (lambda ()
 				    (local-set-key (kbd "C-c C-e") 'eval-buffer)))
