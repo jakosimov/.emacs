@@ -46,6 +46,7 @@
   (add-hook 'text-mode-hook 'visual-line-mode))
 
 (use-package doom-themes
+  :ensure t
   :config
   (defvar preferred-theme 'doom-dracula)  ;; doom-one-light, dracula and doom-gruvbox is nice
   (defun load-preferred-theme ()
@@ -62,46 +63,62 @@
     (load-preferred-theme))
   (load-preferred-theme))
 
-(use-package magit)
+(use-package magit
+  :ensure t)
 
 (use-package ivy
+  :ensure t
   :config
   (ivy-mode 1))
 
 (use-package ivy-posframe
+  :ensure t
   :config
   (setq ivy-posframe-display-functions-alist
         '((t . ivy-posframe-display-at-frame-center)))
   (ivy-posframe-mode 1))
 
-(use-package lsp-ivy)
+(use-package lsp-ivy
+  :ensure t)
 
 (use-package flycheck
+  :ensure t
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   (global-flycheck-mode))
 
 (use-package company
+  :ensure t
   :config
   (global-company-mode))
 
 (use-package doom-modeline
+  :ensure t
   :config
   (doom-modeline-mode 1))
 
 (use-package org
+  :ensure t
+  :bind ("C-c C-o" . org-capture)
   :config
+  (defvar org-capture-templates
+    '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
+       "* TODO %?\n%U" :empty-lines 1)
+      ("n" "Note" entry (file "~/Documents/notes/captures.org")
+       "* NOTE %?\n%U" :empty-lines 1)))
   (setq org-hide-emphasis-markers t))
 
 (use-package org-bullets
+  :ensure t
   :config
   (add-hook 'org-mode-hook 'org-bullets-mode))
 
-(use-package yasnippet)
+(use-package yasnippet
+  :ensure t)
 
 (use-package lsp-mode
   :ensure t
-  :hook ((typescript-mode c++-mode haskell-mode python-mode c-mode emacs-lisp-mode) . lsp)
+  :hook ((typescript-mode c++-mode haskell-mode python-mode c-mode) . lsp)
   :bind (:map lsp-mode-map
               ("C-c d" . lsp-find-definition)
               ("C-c r" . lsp-ui-peek-find-references)
@@ -120,19 +137,22 @@
   (defvar lsp-ui-doc-enable nil)
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
-
   (if (not strict-python-enabled)
       (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)))
 
 (use-package company-lsp
+  :ensure t
   :config
   (defvar company-lsp-enable-snippet nil))
 
-(use-package lsp-haskell)
+(use-package lsp-haskell
+  :ensure t)
 
-(use-package lsp-ui)
+(use-package lsp-ui
+  :ensure t)
 
 (use-package lsp-treemacs
+  :ensure t
   :config
   (lsp-treemacs-sync-mode 1))
 
@@ -145,6 +165,7 @@
   (add-hook 'prog-mode-hook 'show-paren-mode))
 
 (use-package smartparens
+  :ensure t
   :config
   (require 'smartparens-config)
   (add-hook 'prog-mode-hook 'smartparens-mode)
@@ -155,6 +176,7 @@
   (add-hook 'c-mode-common-hook 'electric-pair-mode))
 
 (use-package treemacs
+  :ensure t
   :bind ("C-c b" . treemacs))
 
 (use-package python
