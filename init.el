@@ -117,8 +117,7 @@
 
 (use-package org-bullets
   :ensure t
-  :config
-  (add-hook 'org-mode-hook 'org-bullets-mode))
+  :hook (org-mode . org-bullets-mode))
 
 (use-package yasnippet
   :ensure t)
@@ -165,23 +164,20 @@
   (lsp-treemacs-sync-mode 1))
 
 (use-package display-line-numbers
-  :config
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+  :hook (prog-mode . display-line-numbers-mode))
 
 (use-package paren
-  :config
-  (add-hook 'prog-mode-hook 'show-paren-mode))
+  :hook (prog-mode . show-paren-mode))
 
 (use-package smartparens
   :ensure t
+  :hook ((prog-mode . smartparens-mode)
+         (c-mode-common . (lambda () (smartparens-mode -1))))
   :config
-  (require 'smartparens-config)
-  (add-hook 'prog-mode-hook 'smartparens-mode)
-  (add-hook 'c-mode-common-hook (lambda () (smartparens-mode -1))))
+  (require 'smartparens-config))
 
 (use-package elec-pair
-  :config
-  (add-hook 'c-mode-common-hook 'electric-pair-mode))
+  :hook (c-mode-common . electric-pair-mode))
 
 (use-package treemacs
   :ensure t
