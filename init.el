@@ -98,7 +98,8 @@
 
 (use-package projectile
   :bind (("C-c C-f" . projectile-find-file)
-         ("C-c C-p" . projectile-switch-project))
+         ("C-c p" . projectile-switch-project)
+         ("C-c b" . projectile-switch-to-buffer))
   :config
   (projectile-mode 1)
   ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
@@ -181,7 +182,7 @@
 
 (use-package treemacs
   :ensure t
-  :bind ("C-c b" . treemacs))
+  :bind ("C-c C-b" . treemacs))
 
 (use-package python
   :config
