@@ -14,7 +14,7 @@
  '(custom-safe-themes
    '("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default))
  '(package-selected-packages
-   '(treemacs-projectile projectile typescript-mode use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer)))
+   '(vterm treemacs-projectile projectile typescript-mode use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer)))
 
 (load "~/.emacs.d/terminal-thing")
 
@@ -140,7 +140,7 @@
   (defvar lsp-clients-clangd-args '("-cross-file-rename"))
   (defvar strict-python-enabled nil)
   (defvar strict-python-warnings
-    (list "E302" "E305" "W391" "E226"))
+    (vector "E302" "E305" "W391" "E226" "E111"))
   (defvar lsp-ui-doc-enable nil)
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
@@ -198,3 +198,9 @@
   (find-file "~/.emacs.d/init.el"))
 
 (provide 'init)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

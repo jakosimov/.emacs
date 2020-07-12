@@ -1,5 +1,9 @@
-(defvar mini-term-name "Terminal")
-(defvar actual-term-name (concat "*" mini-term-name "*"))
+(use-package vterm
+  :ensure t
+  :bind (:map vterm-mode-map
+              ("C-w" . kill-ring-save)))
+(defvar mini-term-name "vterm")
+(defvar actual-term-name mini-term-name)
 (defvar term-mode-line-enabled nil)
 (defvar term-width -60)
 (defvar term-height -15)
@@ -19,9 +23,7 @@
   (position-if (lambda (s) (string= s target)) alist))
 
 (defun initialize-terminal-buffer ()
-  (ansi-term "/bin/bash" mini-term-name)
-  (local-set-key (kbd "C-x w") 'kill-ring-save)
-  (local-set-key (kbd "C-x y") 'yank))
+  (vterm))
 
 (defun get-terminal-buffer ()
   "Does something."
