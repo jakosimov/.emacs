@@ -2,7 +2,6 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-
 ;; ---------------------------------------------------
 ;; --------- Auto-generated --------------------------
 ;; ---------------------------------------------------
@@ -13,19 +12,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default)))
+   '("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default))
  '(package-selected-packages
-   (quote
-    (typescript-mode use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+   '(treemacs-projectile projectile typescript-mode use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer)))
 
 (load "~/.emacs.d/terminal-thing")
+
+(defvar on-laptop t)
 
 (use-package emacs
   :bind (("C-c j" . toggle-terminal-horizontal)
@@ -34,6 +27,7 @@
          ("C-'" . comment-line)
          ("C-z" . nil)
          ("C-x w" . kill-ring-save))
+  :hook (text-mode . visual-line-mode)
   :config
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
@@ -43,7 +37,12 @@
   (setq frame-title-format '("emacs"))
   (setq-default indent-tabs-mode nil)
   (setq-default truncate-lines t)
-  (add-hook 'text-mode-hook 'visual-line-mode))
+  (if on-laptop
+      (set-face-attribute 'default nil :font "Source Code Pro")
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
+  (if on-laptop
+      (set-face-attribute 'default nil :height 102)
+    (set-face-attribute 'default nil :height 100)))
 
 (use-package doom-themes
   :ensure t
@@ -97,6 +96,14 @@
   :config
   (doom-modeline-mode 1))
 
+(use-package projectile
+  :bind (("C-c C-f" . projectile-find-file)
+         ("C-c C-p" . projectile-switch-project))
+  :config
+  (projectile-mode 1)
+  ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (setq projectile-completion-system 'ivy))
+
 (use-package org
   :ensure t
   :bind ("C-c C-o" . org-capture)
@@ -122,6 +129,7 @@
   :bind (:map lsp-mode-map
               ("C-c d" . lsp-find-definition)
               ("C-c r" . lsp-ui-peek-find-references)
+              ("C-c h" . lsp-ui-doc-show)
               ("C-c s" . imenu)
               ("C-c C-d" . lsp-find-declaration)
               ("C-c e" . lsp-treemacs-errors-list)
@@ -192,6 +200,5 @@
   "Opens the init.el file."
   (interactive)
   (find-file "~/.emacs.d/init.el"))
-
 
 (provide 'init)
