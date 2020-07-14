@@ -2,19 +2,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-;; ---------------------------------------------------
-;; --------- Auto-generated --------------------------
-;; ---------------------------------------------------
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" "a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" default))
- '(package-selected-packages
-   '(vterm treemacs-projectile projectile typescript-mode use-package racket-mode ivy-posframe yasnippet yaml-mode web-mode smartparens rust-mode pretty-mode org-bullets magit lsp-ui lsp-treemacs lsp-ivy lsp-haskell hasky-stack flycheck dracula-theme doom-themes doom-modeline company-lsp cmake-project cmake-mode cmake-ide autothemer)))
+;; To install, just run: package-install use-package
 
 (load "~/.emacs.d/terminal-thing")
 
@@ -97,6 +85,7 @@
   (doom-modeline-mode 1))
 
 (use-package projectile
+  :ensure t
   :bind (("C-c C-f" . projectile-find-file)
          ("C-c p" . projectile-switch-project)
          ("C-c b" . projectile-switch-to-buffer))
@@ -140,13 +129,16 @@
   :config
   (defvar lsp-clients-clangd-args '("-cross-file-rename"))
   (defvar strict-python-enabled nil)
+  (defvar incorrect-python-warnings
+    (vector "W503"))
   (defvar strict-python-warnings
-    (vector "E302" "E305" "W391" "E226" "E111"))
+    (vector "W503" "E303" "E302" "E305" "W391" "E226" "E111"))
   (defvar lsp-ui-doc-enable nil)
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
   (if (not strict-python-enabled)
-      (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)))
+      (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
+    (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings)))
 
 (use-package company-lsp
   :ensure t
@@ -186,10 +178,12 @@
 
 (use-package python
   :config
+  (unbind-key "C-c C-f" python-mode-map)
   (setq-default python-indent-levels 2)
   (setq-default python-indent-offset 2))
 
 (use-package typescript-mode
+  :ensure t
   :config
   (setq-default typescript-indent-level 2))
 
@@ -199,6 +193,15 @@
   (find-file "~/.emacs.d/init.el"))
 
 (provide 'init)
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
