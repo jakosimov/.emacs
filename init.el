@@ -23,6 +23,8 @@
   (setq confirm-kill-processes nil)
   (setq inhibit-splash-screen t)
   (setq frame-title-format '("emacs"))
+  (defvar gdb-show-main t)
+  (defvar gdb-display-io-nopopup t)
   (setq-default indent-tabs-mode nil)
   (setq-default truncate-lines t)
   (if on-laptop
@@ -81,7 +83,7 @@
 
 (use-package doom-modeline
   :ensure t
-  :config
+  :init
   (doom-modeline-mode 1))
 
 (use-package projectile
