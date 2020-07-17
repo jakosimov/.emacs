@@ -1,8 +1,9 @@
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-;; To install, just run: package-install use-package
+;; To install, just run: `package-install' `use-package'
 
 (load "~/.emacs.d/terminal-thing")
 
@@ -83,7 +84,7 @@
 
 (use-package doom-modeline
   :ensure t
-  :init
+  :init ;; Run `all-the-icons-install-fonts' as well
   (doom-modeline-mode 1))
 
 (use-package projectile
@@ -93,7 +94,6 @@
          ("C-c b" . projectile-switch-to-buffer))
   :config
   (projectile-mode 1)
-  ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-completion-system 'ivy))
 
 (use-package org
@@ -166,13 +166,9 @@
 
 (use-package smartparens
   :ensure t
-  :hook ((prog-mode . smartparens-mode)
-         (c-mode-common . (lambda () (smartparens-mode -1))))
+  :hook (prog-mode . smartparens-mode)
   :config
   (require 'smartparens-config))
-
-(use-package elec-pair
-  :hook (c-mode-common . electric-pair-mode))
 
 (use-package treemacs
   :ensure t
@@ -202,6 +198,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
    '(smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
