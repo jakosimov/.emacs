@@ -38,18 +38,20 @@
 (use-package doom-themes
   :ensure t
   :config
-  (defvar preferred-theme 'doom-dracula)  ;; doom-one-light, dracula and doom-gruvbox is nice
+  (defvar dark-theme 'doom-dracula)
+  (defvar light-theme 'doom-one-light)
+  (defvar preferred-theme dark-theme)  ;; doom-one-light, dracula and doom-gruvbox is nice
   (defun load-preferred-theme ()
     (load-theme preferred-theme t)
-    (when (eq preferred-theme 'doom-dracula)
+    (when (eq preferred-theme dark-theme)
       (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
       (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
       (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold)))
   (defun invert-theme ()
     (interactive)
-    (if (eq preferred-theme 'doom-dracula)
-        (setq preferred-theme 'doom-one-light)
-      (setq preferred-theme 'doom-dracula))
+    (if (eq preferred-theme dark-theme)
+        (setq preferred-theme light-theme)
+      (setq preferred-theme dark-theme))
     (load-preferred-theme))
   (load-preferred-theme))
 
@@ -199,7 +201,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
+   '("1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
    '(smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces

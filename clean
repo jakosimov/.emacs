@@ -1,0 +1,5 @@
+rm *~
+rm transient/ -rd
+rm auto-save-list/ -rd
+rm elpa/ -rd
+rm projectile-bookmarks.eld
