@@ -117,6 +117,13 @@
   (interactive)
   (create-new-terminal (projectile-project-root) (projectile-project-name)))
 
+(defun new-terminal ()
+  (interactive)
+  (let ((project-name (projectile-project-name)))
+    (if (string= () "-")
+        (create-local-terminal)
+      (create-project-terminal))))
+
 (use-package vterm
   :ensure t
   :bind (:map vterm-mode-map

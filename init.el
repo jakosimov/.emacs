@@ -12,6 +12,7 @@
 (use-package emacs
   :bind (("C-c j" . toggle-terminal-horizontal)
          ("C-c C-j" . toggle-terminal-vertical)
+         ("C-c J" . new-terminal)
          ("C-j" . newline-and-indent)
          ("C-'" . comment-line)
          ("C-z" . nil)
