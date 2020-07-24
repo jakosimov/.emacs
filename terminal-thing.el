@@ -2,7 +2,7 @@
   :ensure t
   :bind (:map vterm-mode-map
               ("C-w" . kill-ring-save)))
-(defvar mini-term-name "terminal")
+(defvar mini-term-name "console")
 (defvar actual-term-name mini-term-name)
 (defvar term-mode-line-enabled nil)
 (defvar term-width -60)
@@ -89,13 +89,25 @@
     (vterm-send-return)
     (vterm-clear)))
 
+(defun change-terminal-buffer ()
+  (interactive)
+  (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
+         (buffers (seq-filter (lambda (s) (string-prefix-p actual-term-name s))
+                              buffer-names))
+         (name (ivy-read "Switch to terminal: "
+                         buffers)))
+    (switch-to-buffer name)))
+
 (defun create-new-terminal (dir name)
   (let ((terminal-window (get-terminal-window)))
     (if (not terminal-window)
         (open-terminal-window t)
       (select-window terminal-window))
-    (vterm--set-directory dir)
-    (initialize-terminal-buffer (concat mini-term-name "<" name ">"))))
+    (initialize-terminal-buffer (concat mini-term-name "<" name ">"))
+    (vterm-send-string (concat "cd " dir) t)
+    (vterm-send-return)
+    (vterm-clear)
+    (cd dir)))
 
 (defun create-local-terminal ()
   (interactive)
@@ -104,5 +116,10 @@
 (defun create-project-terminal ()
   (interactive)
   (create-new-terminal (projectile-project-root) (projectile-project-name)))
+
+(use-package vterm
+  :ensure t
+  :bind (:map vterm-mode-map
+              ("C-x b" . change-terminal-buffer)))
 
 (provide 'terminal-thing)
