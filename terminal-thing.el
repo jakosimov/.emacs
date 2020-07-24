@@ -2,7 +2,7 @@
   :ensure t
   :bind (:map vterm-mode-map
               ("C-w" . kill-ring-save)))
-(defvar mini-term-name "vterm")
+(defvar mini-term-name "terminal")
 (defvar actual-term-name mini-term-name)
 (defvar term-mode-line-enabled nil)
 (defvar term-width -60)
@@ -22,9 +22,10 @@
   "Does something with TARGET and ALIST."
   (position-if (lambda (s) (string-prefix-p target s)) alist))
 
-(defun initialize-terminal-buffer ()
+(defun initialize-terminal-buffer (name)
   (interactive)
   (vterm)
+  (rename-buffer name t)
   (if (not term-mode-line-enabled)
       (setq mode-line-format nil)))
 
@@ -38,7 +39,7 @@
   (let* ((term-index (find-terminal-buffer-index)))
     (if term-index
         (switch-to-buffer (nth term-index (buffer-list)))
-      (initialize-terminal-buffer))))
+      (initialize-terminal-buffer mini-term-name))))
 
 (defun create-new-window (is-horizontal)
   (let* ((size (if is-horizontal
@@ -88,14 +89,20 @@
     (vterm-send-return)
     (vterm-clear)))
 
-(defun create-new-terminal ()
-  (interactive)
-  (let ((dir (expand-file-name default-directory))
-        (terminal-window (get-terminal-window)))
+(defun create-new-terminal (dir name)
+  (let ((terminal-window (get-terminal-window)))
     (if (not terminal-window)
         (open-terminal-window t)
       (select-window terminal-window))
     (vterm--set-directory dir)
-    (initialize-terminal-buffer)))
+    (initialize-terminal-buffer (concat mini-term-name "<" name ">"))))
+
+(defun create-local-terminal ()
+  (interactive)
+  (create-new-terminal (expand-file-name default-directory) (buffer-name)))
+
+(defun create-project-terminal ()
+  (interactive)
+  (create-new-terminal (projectile-project-root) (projectile-project-name)))
 
 (provide 'terminal-thing)
