@@ -1,4 +1,3 @@
-
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
@@ -69,6 +68,7 @@
   :config
   (setq ivy-posframe-display-functions-alist
         '((t . ivy-posframe-display-at-frame-center)))
+  (setq posframe-mouse-banish nil)
   (ivy-posframe-mode 1))
 
 (use-package lsp-ivy
@@ -92,7 +92,8 @@
 
 (use-package projectile
   :ensure t
-  :bind (("C-c C-f" . projectile-find-file)
+  :bind (:map projectile-mode-map
+         ("C-c C-f" . projectile-find-file)
          ("C-c p" . projectile-switch-project)
          ("C-c b" . projectile-switch-to-buffer))
   :config

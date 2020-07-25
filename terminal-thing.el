@@ -22,12 +22,14 @@
   "Does something with TARGET and ALIST."
   (position-if (lambda (s) (string-prefix-p target s)) alist))
 
-(defun initialize-terminal-buffer (name)
-  (interactive)
-  (vterm)
-  (rename-buffer name t)
-  (if (not term-mode-line-enabled)
-      (setq mode-line-format nil)))
+(defun initialize-terminal-buffer (name dir)
+  (with-temp-buffer
+    (if dir
+        (cd dir))
+    (vterm)
+    (rename-buffer name t)
+    (if (not term-mode-line-enabled)
+        (setq mode-line-format nil))))
 
 (defun find-terminal-buffer-index ()
   (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
@@ -39,19 +41,20 @@
   (let* ((term-index (find-terminal-buffer-index)))
     (if term-index
         (switch-to-buffer (nth term-index (buffer-list)))
-      (initialize-terminal-buffer mini-term-name))))
+      (initialize-terminal-buffer mini-term-name nil))))
 
 (defun create-new-window (is-horizontal)
   (let* ((size (if is-horizontal
                    term-height
                  term-width))
          (side (not is-horizontal)))
-         (split-window (frame-root-window) size side)))
+    (split-window (frame-root-window) size side)))
 
 (defun open-terminal-window (is-horizontal)
   (let ((new-window (create-new-window is-horizontal)))
     (select-window new-window)
-    (get-a-terminal-buffer)))
+    (get-a-terminal-buffer))
+  (set-window-dedicated-p (selected-window) t))
 
 (defun get-terminal-window ()
   (let* ((window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
@@ -90,43 +93,46 @@
     (vterm-clear)))
 
 (defun change-terminal-buffer ()
-  (interactive)
   (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
          (buffers (seq-filter (lambda (s) (string-prefix-p actual-term-name s))
                               buffer-names))
          (name (ivy-read "Switch to terminal: "
                          buffers)))
-    (switch-to-buffer name)))
+    (set-window-dedicated-p (selected-window) nil)
+    (switch-to-buffer name)
+    (set-window-dedicated-p (selected-window) t)))
+
+(defun from-terminal-switch-buffer ()
+  (interactive)
+  (if (not (window-dedicated-p))
+      (ivy-switch-buffer)
+    (change-terminal-buffer)))
 
 (defun create-new-terminal (dir name)
   (let ((terminal-window (get-terminal-window)))
     (if (not terminal-window)
-        (open-terminal-window t)
+        (let ((window (create-new-window t)))
+          (select-window window))
       (select-window terminal-window))
-    (initialize-terminal-buffer (concat mini-term-name "<" name ">"))
-    (vterm-send-string (concat "cd " dir) t)
-    (vterm-send-return)
-    (vterm-clear)
-    (cd dir)))
+    (set-window-dedicated-p (selected-window) nil)
+    (initialize-terminal-buffer (concat mini-term-name "<" name ">") dir)
+    (set-window-dedicated-p (selected-window) t)))
 
 (defun create-local-terminal ()
-  (interactive)
   (create-new-terminal (expand-file-name default-directory) (buffer-name)))
 
 (defun create-project-terminal ()
-  (interactive)
   (create-new-terminal (projectile-project-root) (projectile-project-name)))
 
 (defun new-terminal ()
   (interactive)
-  (let ((project-name (projectile-project-name)))
-    (if (string= () "-")
-        (create-local-terminal)
-      (create-project-terminal))))
+  (if (not (projectile-project-root))
+      (create-local-terminal)
+    (create-project-terminal)))
 
 (use-package vterm
   :ensure t
   :bind (:map vterm-mode-map
-              ("C-x b" . change-terminal-buffer)))
+              ("C-x b" . from-terminal-switch-buffer)))
 
 (provide 'terminal-thing)
