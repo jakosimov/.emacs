@@ -183,8 +183,9 @@
 (use-package python
   :config
   (unbind-key "C-c C-f" python-mode-map)
-  (setq-default python-indent-levels 2)
-  (setq-default python-indent-offset 2))
+  (unbind-key "C-c C-j" python-mode-map)
+  (setq-default python-indent-levels 4)
+  (setq-default python-indent-offset 4))
 
 (use-package typescript-mode
   :ensure t
