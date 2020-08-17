@@ -28,6 +28,8 @@
   (defvar gdb-display-io-nopopup t)
   (setq-default indent-tabs-mode nil)
   (setq-default truncate-lines t)
+  (setq mouse-wheel-scroll-amount '(1))
+  (setq mouse-wheel-progressive-speed nil)
   (if on-laptop
       (set-face-attribute 'default nil :font "Source Code Pro")
     (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
@@ -104,14 +106,17 @@
 
 (use-package org
   :ensure t
-  :bind ("C-c C-o" . org-capture)
+  :bind (("C-c C-o" . org-capture)
+         ("C-c a" . org-agenda))
   :config
   (defvar org-capture-templates
     '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
        "* TODO %?\n%U" :empty-lines 1)
       ("n" "Note" entry (file "~/Documents/notes/captures.org")
        "* NOTE %?\n%U" :empty-lines 1)))
-  (setq org-hide-emphasis-markers t))
+  (setq org-hide-emphasis-markers t)
+  (setq org-agenda-files (list "~/Documents/notes/"))
+  (setq org-log-done t))
 
 (use-package org-bullets
   :ensure t
@@ -207,7 +212,7 @@
  '(custom-safe-themes
    '("1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
-   '(smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
+   '(rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
