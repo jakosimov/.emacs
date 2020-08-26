@@ -40,9 +40,9 @@
 (use-package doom-themes
   :ensure t
   :config
-  (defvar dark-theme 'doom-dracula)
-  (defvar light-theme 'doom-one-light)
-  (defvar preferred-theme dark-theme)  ;; doom-one-light, dracula and doom-gruvbox is nice
+  (defvar dark-theme 'doom-dracula) ;; doom-dracula and doom-gruvbox
+  (defvar light-theme 'doom-one-light)  ;; doom-one-light
+  (defvar preferred-theme dark-theme)
   (defun load-preferred-theme ()
     (load-theme preferred-theme t)
     (when (eq preferred-theme dark-theme)
@@ -55,7 +55,8 @@
         (setq preferred-theme light-theme)
       (setq preferred-theme dark-theme))
     (load-preferred-theme))
-  (load-preferred-theme))
+  (load-preferred-theme)
+  (doom-themes-org-config))
 
 (use-package magit
   :ensure t)
@@ -106,7 +107,7 @@
 
 (use-package org
   :ensure t
-  :bind (("C-c C-o" . org-capture)
+  :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda))
   :config
   (defvar org-capture-templates
@@ -212,7 +213,7 @@
  '(custom-safe-themes
    '("1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
-   '(rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
+   '(yaml-mode rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
