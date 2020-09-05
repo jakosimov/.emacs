@@ -117,7 +117,8 @@
        "* NOTE %?\n%U" :empty-lines 1)))
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list "~/Documents/notes/"))
-  (setq org-log-done t))
+  (setq org-log-done t)
+  (setq org-highlight-latex-and-related '(latex script entities)))
 
 (use-package org-bullets
   :ensure t
