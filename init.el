@@ -6,7 +6,7 @@
 
 (load "~/.emacs.d/terminal-thing")
 
-(defvar on-laptop t)
+(defvar on-laptop nil)
 
 (use-package emacs
   :bind (("C-c j" . toggle-terminal-horizontal)
@@ -123,7 +123,8 @@
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list "~/Documents/notes/"))
   (setq org-log-done t)
-  (setq org-highlight-latex-and-related '(latex script entities)))
+  (setq org-highlight-latex-and-related '(latex script entities))
+  (setq org-return-follows-link t))
 
 (use-package org-bullets
   :ensure t

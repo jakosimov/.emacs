@@ -2,6 +2,6 @@
 # name: export
 # key: export
 # --
-+#BEGIN_EXPORT latex
+#+BEGIN_EXPORT latex
 $0
-+#END_EXPORT
+#+END_EXPORT
