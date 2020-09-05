@@ -98,9 +98,9 @@
 (use-package projectile
   :ensure t
   :bind (:map projectile-mode-map
-         ("C-c C-f" . projectile-find-file)
-         ("C-c p" . projectile-switch-project)
-         ("C-c b" . projectile-switch-to-buffer))
+              ("C-c C-f" . projectile-find-file)
+              ("C-c p" . projectile-switch-project)
+              ("C-c b" . projectile-switch-to-buffer))
   :config
   (projectile-mode 1)
   (setq projectile-completion-system 'ivy))
@@ -110,11 +110,16 @@
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda))
   :config
+  (defun export-macro ()
+    (interactive)
+    (insert "#+BEGIN_EXPORT latex\n")
+    (save-excursion (insert "\n#+END_EXPORT")))
   (defvar org-capture-templates
     '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
        "* TODO %?\n%U" :empty-lines 1)
       ("n" "Note" entry (file "~/Documents/notes/captures.org")
        "* NOTE %?\n%U" :empty-lines 1)))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list "~/Documents/notes/"))
   (setq org-log-done t)
@@ -125,7 +130,10 @@
   :hook (org-mode . org-bullets-mode))
 
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :hook (org-mode . yas-minor-mode)
+  :config
+  (yas-reload-all))
 
 (use-package lsp-mode
   :ensure t
@@ -179,9 +187,14 @@
 
 (use-package smartparens
   :ensure t
-  :hook (prog-mode . smartparens-mode)
+  :hook ((prog-mode . smartparens-mode)
+         (org-mode . smartparens-mode))
   :config
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  (defun configure-org-mode ()
+    (sp-local-pair 'org-mode "\\(" "\\)")
+    (sp-local-pair 'org-mode "$" "$"))
+  (configure-org-mode))
 
 (use-package treemacs
   :ensure t
@@ -212,7 +225,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
+   '("912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "9b272154fb77a926f52f2756ed5872877ad8d73d018a426d44c6083d1ed972b1" "bc836bf29eab22d7e5b4c142d201bcce351806b7c1f94955ccafab8ce5b20208" "1623aa627fecd5877246f48199b8e2856647c99c6acdab506173f9bb8b0a41ac" "1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
    '(yaml-mode rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
