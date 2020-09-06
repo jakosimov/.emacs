@@ -43,12 +43,35 @@
   (defvar dark-theme 'doom-dracula) ;; doom-dracula and doom-gruvbox
   (defvar light-theme 'doom-one-light)  ;; doom-one-light
   (defvar preferred-theme dark-theme)
+  (defun switch-theme (theme)
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme 'no-confirm))
+  (defun is-dark-theme ()
+    (eq preferred-theme dark-theme))
+  (defun fix-org-blocks ()
+    (with-eval-after-load 'org
+      (let* ((alpha (if (is-dark-theme) 0.1 0.03))
+             (orig (face-attribute 'default :background))
+             (c (doom-darken orig alpha))
+             (begin-fg
+              (if (is-dark-theme)
+                  (doom-lighten c 0.2)
+                (doom-darken c 0.3))))
+        (set-face-attribute 'org-block-begin-line nil
+                            :background c
+                            :foreground begin-fg)
+        (set-face-attribute 'org-block-end-line nil
+                            :background c
+                            :foreground begin-fg)
+        (set-face-attribute 'org-block nil
+                            :background c))))
   (defun load-preferred-theme ()
-    (load-theme preferred-theme t)
-    (when (eq preferred-theme dark-theme)
-      (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
-      (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
-      (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold)))
+    (switch-theme preferred-theme)
+    (fix-org-blocks)
+    (if (is-dark-theme)
+      (progn (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
+             (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
+             (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold))))
   (defun invert-theme ()
     (interactive)
     (if (eq preferred-theme dark-theme)
@@ -57,6 +80,27 @@
     (load-preferred-theme))
   (load-preferred-theme)
   (doom-themes-org-config))
+
+(use-package org
+  :ensure t
+  :bind (("C-c c" . org-capture)
+         ("C-c a" . org-agenda))
+  :config
+  (defun export-macro ()
+    (interactive)
+    (insert "#+BEGIN_EXPORT latex\n")
+    (save-excursion (insert "\n#+END_EXPORT")))
+  (defvar org-capture-templates
+    '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
+       "* TODO %?\n%U" :empty-lines 1)
+      ("n" "Note" entry (file "~/Documents/notes/captures.org")
+       "* NOTE %?\n%U" :empty-lines 1)))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+  (setq org-hide-emphasis-markers t)
+  (setq org-agenda-files (list "~/Documents/notes/"))
+  (setq org-log-done t)
+  (setq org-highlight-latex-and-related '(latex script entities))
+  (setq org-return-follows-link t))
 
 (use-package magit
   :ensure t)
@@ -104,27 +148,6 @@
   :config
   (projectile-mode 1)
   (setq projectile-completion-system 'ivy))
-
-(use-package org
-  :ensure t
-  :bind (("C-c c" . org-capture)
-         ("C-c a" . org-agenda))
-  :config
-  (defun export-macro ()
-    (interactive)
-    (insert "#+BEGIN_EXPORT latex\n")
-    (save-excursion (insert "\n#+END_EXPORT")))
-  (defvar org-capture-templates
-    '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
-       "* TODO %?\n%U" :empty-lines 1)
-      ("n" "Note" entry (file "~/Documents/notes/captures.org")
-       "* NOTE %?\n%U" :empty-lines 1)))
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-  (setq org-hide-emphasis-markers t)
-  (setq org-agenda-files (list "~/Documents/notes/"))
-  (setq org-log-done t)
-  (setq org-highlight-latex-and-related '(latex script entities))
-  (setq org-return-follows-link t))
 
 (use-package org-superstar
   :ensure t
