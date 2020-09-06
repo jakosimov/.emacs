@@ -6,7 +6,7 @@
 
 (load "~/.emacs.d/terminal-thing")
 
-(defvar on-laptop nil)
+(defvar on-laptop t)
 
 (use-package emacs
   :bind (("C-c j" . toggle-terminal-horizontal)
@@ -128,7 +128,9 @@
 
 (use-package org-superstar
   :ensure t
-  :hook (org-mode . org-superstar-mode))
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-headline-bullets-list '("⁖")))
 
 (use-package yasnippet
   :ensure t
@@ -193,8 +195,10 @@
   :config
   (require 'smartparens-config)
   (defun configure-org-mode ()
-    (sp-local-pair 'org-mode "\\(" "\\)")
-    (sp-local-pair 'org-mode "$" "$"))
+    (sp-with-modes 'org-mode
+      (sp-local-pair "*" "*" :actions nil)
+      (sp-local-pair "\\(" "\\)")
+      (sp-local-pair "$" "$")))
   (configure-org-mode))
 
 (use-package treemacs
@@ -226,13 +230,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "9b272154fb77a926f52f2756ed5872877ad8d73d018a426d44c6083d1ed972b1" "bc836bf29eab22d7e5b4c142d201bcce351806b7c1f94955ccafab8ce5b20208" "1623aa627fecd5877246f48199b8e2856647c99c6acdab506173f9bb8b0a41ac" "1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
+   '("711efe8b1233f2cf52f338fd7f15ce11c836d0b6240a18fffffc2cbd5bfe61b0" "d5a878172795c45441efcd84b20a14f553e7e96366a163f742b95d65a3f55d71" "37a4701758378c93159ad6c7aceb19fd6fb523e044efe47f2116bc7398ce20c9" "4f01c1df1d203787560a67c1b295423174fd49934deb5e6789abd1e61dba9552" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "9b272154fb77a926f52f2756ed5872877ad8d73d018a426d44c6083d1ed972b1" "bc836bf29eab22d7e5b4c142d201bcce351806b7c1f94955ccafab8ce5b20208" "1623aa627fecd5877246f48199b8e2856647c99c6acdab506173f9bb8b0a41ac" "1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
  '(package-selected-packages
    '(yaml-mode rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
 (custom-set-faces
- '(org-level-1 ((t (:inherit outline-1 :height 1.4))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.3))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.2))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.1))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.0))))
- )
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
