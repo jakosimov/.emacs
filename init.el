@@ -100,7 +100,10 @@
   (setq org-agenda-files (list "~/Documents/notes/"))
   (setq org-log-done t)
   (setq org-highlight-latex-and-related '(latex script entities))
-  (setq org-return-follows-link t))
+  (setq org-return-follows-link t)
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((python . t)))
+  (setq org-confirm-babel-evaluate nil))
 
 (use-package magit
   :ensure t)
@@ -123,9 +126,9 @@
 
 (use-package flycheck
   :ensure t
+  :hook ((emacs-lisp-mode) . flycheck-mode)
   :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  (global-flycheck-mode))
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package company
   :ensure t
@@ -219,7 +222,6 @@
   (require 'smartparens-config)
   (defun configure-org-mode ()
     (sp-with-modes 'org-mode
-      (sp-local-pair "*" "*" :actions nil)
       (sp-local-pair "\\(" "\\)")
       (sp-local-pair "$" "$")))
   (configure-org-mode))
