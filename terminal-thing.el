@@ -1,3 +1,4 @@
+
 (use-package vterm
   :ensure t
   :bind (:map vterm-mode-map
@@ -31,19 +32,20 @@
     (if (not term-mode-line-enabled)
         (setq mode-line-format nil))))
 
-(defun find-terminal-buffer-index ()
+(defun find-last-used-terminal-buffer ()
   (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
          (term-index (find-string-index actual-term-name buffer-names)))
-    term-index))
-
-(defun get-a-terminal-buffer ()
-  "Does something."
-  (let* ((term-index (find-terminal-buffer-index)))
     (if term-index
-        (switch-to-buffer (nth term-index (buffer-list)))
+        (nth term-index (buffer-list))
+      nil)))
+
+(defun open-terminal-buffer-in-current-window ()
+  (let* ((term-buffer (find-last-used-terminal-buffer)))
+    (if term-buffer
+        (switch-to-buffer term-buffer)
       (initialize-terminal-buffer mini-term-name nil))))
 
-(defun create-new-window (is-horizontal)
+(defun create-new-empty-window (is-horizontal)
   (let* ((size (if is-horizontal
                    term-height
                  term-width))
@@ -51,12 +53,12 @@
     (split-window (frame-root-window) size side)))
 
 (defun open-terminal-window (is-horizontal)
-  (let ((new-window (create-new-window is-horizontal)))
+  (let ((new-window (create-new-empty-window is-horizontal)))
     (select-window new-window)
-    (get-a-terminal-buffer))
-  (set-window-dedicated-p (selected-window) t))
+    (open-terminal-buffer-in-current-window)
+    (set-window-dedicated-p new-window t)))
 
-(defun get-terminal-window ()
+(defun find-existing-terminal-window ()
   (let* ((window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
                                (window-list)))
          (window-index (find-string-index actual-term-name window-names)))
@@ -65,53 +67,17 @@
       nil)))
 
 (defun toggle-terminal (is-horizontal)
-  (let ((term-window (get-terminal-window)))
+  (let ((term-window (find-existing-terminal-window)))
     (if term-window
         (delete-window term-window)
       (open-terminal-window is-horizontal))))
 
-(defun toggle-terminal-horizontal ()
-  "Toggle a small horizontal terminal window."
-  (interactive)
-  (toggle-terminal t))
 
-(defun toggle-terminal-vertical ()
-  "Toggle a small vertical terminal window."
-  (interactive)
-  (toggle-terminal nil))
-
-(defun cd-to-current ()
-  "CDs to the current buffer directory."
-  (interactive)
-  (let ((dir (expand-file-name default-directory))
-        (terminal-window (get-terminal-window)))
-    (if (not terminal-window)
-        (open-terminal-window t)
-      (select-window terminal-window))
-    (vterm-send-string (concat "cd " dir) t)
-    (vterm-send-return)
-    (vterm-clear)))
-
-(defun change-terminal-buffer ()
-  (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
-         (buffers (seq-filter (lambda (s) (string-prefix-p actual-term-name s))
-                              buffer-names))
-         (name (ivy-read "Switch to terminal: "
-                         buffers)))
-    (set-window-dedicated-p (selected-window) nil)
-    (switch-to-buffer name)
-    (set-window-dedicated-p (selected-window) t)))
-
-(defun from-terminal-switch-buffer ()
-  (interactive)
-  (if (not (window-dedicated-p))
-      (ivy-switch-buffer)
-    (change-terminal-buffer)))
-
+;; Denna och `open-terminal-window' gör lite för lika saker.
 (defun create-new-terminal (dir name)
-  (let ((terminal-window (get-terminal-window)))
+  (let ((terminal-window (find-existing-terminal-window)))
     (if (not terminal-window)
-        (let ((window (create-new-window t)))
+        (let ((window (create-new-empty-window t)))
           (select-window window))
       (select-window terminal-window))
     (set-window-dedicated-p (selected-window) nil)
@@ -126,9 +92,35 @@
 
 (defun new-terminal ()
   (interactive)
-  (if (not (projectile-project-root))
+  (if (not (projectile-project-p))
       (create-local-terminal)
     (create-project-terminal)))
+
+(defun toggle-terminal-horizontal ()
+  "Toggle a small horizontal terminal window."
+  (interactive)
+  (toggle-terminal t))
+
+(defun toggle-terminal-vertical ()
+  "Toggle a small vertical terminal window."
+  (interactive)
+  (toggle-terminal nil))
+
+(defun ivy-switch-terminal-buffer ()
+  (let* ((buffer-names (mapcar (function buffer-name) (buffer-list)))
+         (buffers (seq-filter (lambda (s) (string-prefix-p actual-term-name s))
+                              buffer-names))
+         (name (ivy-read "Switch to terminal: "
+                         buffers)))
+    (set-window-dedicated-p (selected-window) nil)
+    (switch-to-buffer name)
+    (set-window-dedicated-p (selected-window) t)))
+
+(defun from-terminal-switch-buffer ()
+  (interactive)
+  (if (not (window-dedicated-p))
+      (ivy-switch-buffer)
+    (ivy-switch-terminal-buffer)))
 
 (use-package vterm
   :ensure t

@@ -2,6 +2,12 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
 ;; To install, just run: `package-install' `use-package'
 
 (load "~/.emacs.d/terminal-thing")
@@ -84,7 +90,8 @@
 (use-package org
   :ensure t
   :bind (("C-c c" . org-capture)
-         ("C-c a" . org-agenda))
+         ("C-c a" . org-agenda)
+         ("C-c l" . org-store-link))
   :config
   (defun export-macro ()
     (interactive)
@@ -220,10 +227,13 @@
          (org-mode . smartparens-mode))
   :config
   (require 'smartparens-config)
+  (require 'smartparens-org)
   (defun configure-org-mode ()
     (sp-with-modes 'org-mode
       (sp-local-pair "\\(" "\\)")
-      (sp-local-pair "$" "$")))
+      (sp-local-pair "$" "$"))
+    (sp-local-pair 'org-mode "*" "*" :actions :rem)
+    (sp-local-pair 'org-mode "*" nil :actions :rem))
   (configure-org-mode))
 
 (use-package treemacs
