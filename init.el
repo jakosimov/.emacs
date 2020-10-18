@@ -106,6 +106,7 @@
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list "~/Documents/notes/"))
   (setq org-log-done t)
+  (setq org-ellipsis " ⤵")
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-return-follows-link t)
   (org-babel-do-load-languages
@@ -163,7 +164,7 @@
   :ensure t
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("⁖")))
+  (setq org-superstar-headline-bullets-list '("⁖" "♦")))
 
 (use-package yasnippet
   :ensure t
