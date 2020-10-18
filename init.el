@@ -167,7 +167,8 @@
 
 (use-package yasnippet
   :ensure t
-  :hook (org-mode . yas-minor-mode)
+  :hook ((org-mode . yas-minor-mode)
+         (latex-mode . yas-minor-mode))
   :config
   (yas-reload-all))
 
@@ -224,7 +225,8 @@
 (use-package smartparens
   :ensure t
   :hook ((prog-mode . smartparens-mode)
-         (org-mode . smartparens-mode))
+         (org-mode . smartparens-mode)
+         (latex-mode . smartparens-mode))
   :config
   (require 'smartparens-config)
   (require 'smartparens-org)
