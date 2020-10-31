@@ -12,7 +12,8 @@
 
 (load "~/.emacs.d/terminal-thing")
 
-(defvar on-laptop t)
+(defvar on-laptop
+  (equal (system-name) "yoga"))
 
 (use-package emacs
   :bind (("C-c j" . toggle-terminal-horizontal)
@@ -36,8 +37,9 @@
   (setq-default truncate-lines t)
   (setq mouse-wheel-scroll-amount '(1))
   (setq mouse-wheel-progressive-speed nil)
+  (setq default-directory "~/Documents/notes")
   (if on-laptop
-      (set-face-attribute 'default nil :font "Source Code Pro")
+      (set-face-attribute 'default nil :font "Source Code Pro") ;; Source Code Pro, DejaVu Sans Mono
     (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
   (if on-laptop
       (set-face-attribute 'default nil :height 102)
@@ -97,6 +99,21 @@
     (interactive)
     (insert "#+BEGIN_EXPORT latex\n")
     (save-excursion (insert "\n#+END_EXPORT")))
+  (defun prettify-checkboxes ()
+    (add-hook 'org-mode-hook (lambda ()
+                               "Beautify Org Checkbox Symbol"
+                               (push '("[ ]" .  "☐") prettify-symbols-alist)
+                               (push '("[X]" . "☑" ) prettify-symbols-alist)
+                               (push '("[-]" . "❍" ) prettify-symbols-alist)
+                               (prettify-symbols-mode)))
+    (defface org-checkbox-done-text
+      '((t (:foreground "#71696A" :strike-through t)))
+      "Face for the text part of a checked org-mode checkbox.")
+    (font-lock-add-keywords
+     'org-mode
+     `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
+        1 'org-checkbox-done-text prepend))
+     'append))
   (defvar org-capture-templates
     '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
        "* TODO %?\n%U" :empty-lines 1)
@@ -106,7 +123,11 @@
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list "~/Documents/notes/"))
   (setq org-log-done t)
-  (setq org-ellipsis " ⤵")
+  (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, »
+        (if on-laptop
+            " ↴"
+          " ⤵"))
+  (prettify-checkboxes)
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-return-follows-link t)
   (org-babel-do-load-languages
