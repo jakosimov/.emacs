@@ -8,8 +8,6 @@
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
-;; To install, just run: `package-install' `use-package'
-
 (load "~/.emacs.d/terminal-thing")
 
 (defvar on-laptop
@@ -121,7 +119,7 @@
        "* NOTE %?\n%U" :empty-lines 1)))
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   (setq org-hide-emphasis-markers t)
-  (setq org-agenda-files (list "~/Documents/notes/"))
+  (setq org-agenda-files (list "~/Sync/notes/"))
   (setq org-log-done t)
   (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, »
         (if on-laptop
