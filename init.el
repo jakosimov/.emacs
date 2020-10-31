@@ -94,6 +94,7 @@
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda)
          ("C-c l" . org-store-link))
+  :hook (org-mode . auto-revert-mode)
   :config
   (defun export-macro ()
     (interactive)
