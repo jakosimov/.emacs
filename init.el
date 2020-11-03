@@ -114,10 +114,12 @@
      `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
         1 'org-checkbox-done-text prepend))
      'append))
+  (defvar org-captures-path (concat org-directory "captures.org"))
+  (defvar org-todos-path (concat org-directory "todos.org"))
   (defvar org-capture-templates
-    '(("t" "Todo" entry (file "~/Documents/notes/todos.org")
+    '(("t" "Todo" entry (file org-todos-path)
        "* TODO %?\n%U" :empty-lines 1)
-      ("n" "Note" entry (file "~/Documents/notes/captures.org")
+      ("n" "Note" entry (file org-captures-path)
        "* NOTE %?\n%U" :empty-lines 1)))
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
   (setq org-hide-emphasis-markers t)
