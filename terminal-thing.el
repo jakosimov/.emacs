@@ -59,8 +59,9 @@
     (set-window-dedicated-p new-window t)))
 
 (defun find-existing-terminal-window ()
-  (let* ((window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
-                               (window-list)))
+  (let* ((undedictated-windows (seq-filter 'window-dedicated-p (window-list)))
+         (window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
+                               undedictated-windows))
          (window-index (find-string-index actual-term-name window-names)))
     (if window-index
         (nth window-index (window-list))
