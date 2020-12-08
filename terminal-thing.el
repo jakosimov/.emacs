@@ -59,9 +59,9 @@
     (set-window-dedicated-p new-window t)))
 
 (defun find-existing-terminal-window ()
-  (let* ((undedictated-windows (seq-filter 'window-dedicated-p (window-list)))
+  (let* ((dedictated-windows (seq-filter 'window-dedicated-p (window-list)))
          (window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
-                               undedictated-windows))
+                               dedictated-windows))
          (window-index (find-string-index actual-term-name window-names)))
     (if window-index
         (nth window-index (window-list))
@@ -77,10 +77,10 @@
 ;; Denna och `open-terminal-window' gör lite för lika saker.
 (defun create-new-terminal (dir name)
   (let ((terminal-window (find-existing-terminal-window)))
-    (if (not terminal-window)
-        (let ((window (create-new-empty-window t)))
-          (select-window window))
-      (select-window terminal-window))
+    (if terminal-window
+        (select-window terminal-window)
+      (let ((window (create-new-empty-window t)))
+        (select-window window)))
     (set-window-dedicated-p (selected-window) nil)
     (initialize-terminal-buffer (concat mini-term-name "<" name ">") dir)
     (set-window-dedicated-p (selected-window) t)))
