@@ -17,10 +17,11 @@
       (position-if-helper (cdr alist) (+ i 1) pred))))
 
 (defun position-if (pred lst)
+  "Returns the index of the first element in LST that satisfies PRED."
   (position-if-helper lst 0 pred))
 
 (defun find-string-index (target alist)
-  "Does something with TARGET and ALIST."
+  "Returns the index of the first string in ALIST with prefix TARGET."
   (position-if (lambda (s) (string-prefix-p target s)) alist))
 
 (defun initialize-terminal-buffer (name dir)
@@ -58,11 +59,13 @@
     (open-terminal-buffer-in-current-window)
     (set-window-dedicated-p new-window t)))
 
+(defun is-dedicated-terminal-window-p (window)
+  (and (window-dedicated-p window)
+       (string-prefix-p actual-term-name (buffer-name (window-buffer window)))))
+
 (defun find-existing-terminal-window ()
-  (let* ((dedictated-windows (seq-filter 'window-dedicated-p (window-list)))
-         (window-names (mapcar (lambda (win) (buffer-name (window-buffer win)))
-                               dedictated-windows))
-         (window-index (find-string-index actual-term-name window-names)))
+  (let* ((window-index (position-if 'is-dedicated-terminal-window-p
+                                    (window-list))))
     (if window-index
         (nth window-index (window-list))
       nil)))
