@@ -9,6 +9,7 @@
   (package-install 'use-package))
 
 (load "~/.emacs.d/terminal-thing")
+(setq custom-file "~/.emacs.d/customs.el")
 
 (defvar on-laptop
   (equal (system-name) "yoga"))
@@ -155,6 +156,8 @@
   (defvar latex-prefix-size 1.3)
   (if on-laptop
       (setq latex-prefix-size 1.5))
+  (setq org-todo-keywords
+      '((sequence "TODO" "|" "DONE" "CANCELLED")))
   (setq org-format-latex-options (plist-put org-format-latex-options :scale latex-prefix-size))
   (setq org-startup-indented t)
   (setq org-startup-with-latex-preview t)
@@ -189,6 +192,13 @@
     (load-theme theme 'no-confirm))
   (defun is-dark-theme ()
     (eq preferred-theme dark-theme))
+  (defun fix-org-headlines ()
+    (with-eval-after-load 'org
+      (set-face-attribute 'org-level-1 nil :height 1.3)
+      (set-face-attribute 'org-level-2 nil :height 1.2)
+      (set-face-attribute 'org-level-3 nil :height 1.1)
+      (set-face-attribute 'org-level-4 nil :height 1.0)
+      (set-face-attribute 'org-level-5 nil :height 1.0)))
   (defun fix-org-blocks ()
     (with-eval-after-load 'org
       (let* ((alpha (if (is-dark-theme) 0.1 0.03))
@@ -214,6 +224,7 @@
   (defun load-preferred-theme ()
     (switch-theme preferred-theme)
     (fix-org-blocks)
+    (fix-org-headlines)
     (fix-doom-dracula))
   (defun invert-theme ()
     (interactive)
@@ -436,30 +447,4 @@
   (if client-enabled
       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))))
 
-(defun c-emacs ()
-  "Opens the init.el file."
-  (interactive)
-  (find-file "~/.emacs.d/init.el"))
-
-
 (provide 'init)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("e6ff132edb1bfa0645e2ba032c44ce94a3bd3c15e3929cdf6c049802cf059a2a" "71e5acf6053215f553036482f3340a5445aee364fb2e292c70d9175fb0cc8af7" "cae81b048b8bccb7308cdcb4a91e085b3c959401e74a0f125e7c5b173b916bf9" "8d7684de9abb5a770fbfd72a14506d6b4add9a7d30942c6285f020d41d76e0fa" "711efe8b1233f2cf52f338fd7f15ce11c836d0b6240a18fffffc2cbd5bfe61b0" "d5a878172795c45441efcd84b20a14f553e7e96366a163f742b95d65a3f55d71" "37a4701758378c93159ad6c7aceb19fd6fb523e044efe47f2116bc7398ce20c9" "4f01c1df1d203787560a67c1b295423174fd49934deb5e6789abd1e61dba9552" "912cac216b96560654f4f15a3a4d8ba47d9c604cbc3b04801e465fb67a0234f0" "9b272154fb77a926f52f2756ed5872877ad8d73d018a426d44c6083d1ed972b1" "bc836bf29eab22d7e5b4c142d201bcce351806b7c1f94955ccafab8ce5b20208" "1623aa627fecd5877246f48199b8e2856647c99c6acdab506173f9bb8b0a41ac" "1f4b51dcecc5bdd2d4dc462a185de4d9e7845ccfbcbbf30a9fb3952e84f9e876" "99ea831ca79a916f1bd789de366b639d09811501e8c092c85b2cb7d697777f93" "d74c5485d42ca4b7f3092e50db687600d0e16006d8fa335c69cf4f379dbd0eee" "be9645aaa8c11f76a10bcf36aaf83f54f4587ced1b9b679b55639c87404e2499" "e2acbf379aa541e07373395b977a99c878c30f20c3761aac23e9223345526bcc" default))
- '(package-selected-packages
-   '(dante key-chord dashboard which-key evil web-mode company-ctags imenu-anywhere direnv yaml-mode rust-mode smartparens lsp-treemacs lsp-ui lsp-haskell company-lsp yasnippet org-bullets doom-modeline company flycheck lsp-ivy ivy-posframe ivy magit doom-themes vterm use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :height 1.3))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.2))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.1))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
