@@ -29,7 +29,7 @@
     (if dir
         (cd dir))
     (vterm)
-    (rename-buffer name t)
+    (rename-buffer (concat mini-term-name "<" name ">") t)
     (if (not term-mode-line-enabled)
         (setq mode-line-format nil))))
 
@@ -40,11 +40,21 @@
         (nth term-index (buffer-list))
       nil)))
 
+(defun get-terminal-directory ()
+  (if (not (projectile-project-p))
+      (expand-file-name default-directory)
+    (projectile-project-root)))
+
+(defun get-terminal-name ()
+  (if (not (projectile-project-p))
+      (buffer-name)
+    (projectile-project-name)))
+
 (defun open-terminal-buffer-in-current-window ()
   (let* ((term-buffer (find-last-used-terminal-buffer)))
     (if term-buffer
         (switch-to-buffer term-buffer)
-      (initialize-terminal-buffer mini-term-name nil))))
+      (initialize-terminal-buffer (get-terminal-name) (get-terminal-directory)))))
 
 (defun create-new-empty-window (is-horizontal)
   (let* ((size (if is-horizontal
@@ -85,20 +95,14 @@
       (let ((window (create-new-empty-window t)))
         (select-window window)))
     (set-window-dedicated-p (selected-window) nil)
-    (initialize-terminal-buffer (concat mini-term-name "<" name ">") dir)
+    (initialize-terminal-buffer name dir)
     (set-window-dedicated-p (selected-window) t)))
 
-(defun create-local-terminal ()
-  (create-new-terminal (expand-file-name default-directory) (buffer-name)))
 
-(defun create-project-terminal ()
-  (create-new-terminal (projectile-project-root) (projectile-project-name)))
 
 (defun new-terminal ()
   (interactive)
-  (if (not (projectile-project-p))
-      (create-local-terminal)
-    (create-project-terminal)))
+  (create-new-terminal (get-terminal-directory) (get-terminal-name)))
 
 (defun toggle-terminal-horizontal ()
   "Toggle a small horizontal terminal window."

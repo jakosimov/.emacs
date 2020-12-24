@@ -49,6 +49,22 @@
 (use-package lcr
   :ensure t)
 
+(use-package key-chord
+  :ensure t)
+
+(use-package evil
+  :ensure t
+  ;; :hook (evil-mode . key-chord-mode)
+  :config
+  (setq key-chord-two-keys-delay 0.5)
+  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
+  (evil-define-key 'normal prog-mode-map (kbd "å") 'evil-first-non-blank)
+  (evil-set-undo-system 'undo-tree)
+  (key-chord-mode 1)
+  (evil-mode 1)
+  )
+
 (use-package org
   :ensure t
   :bind (("C-c c" . org-capture)
@@ -157,7 +173,8 @@
   (if on-laptop
       (setq latex-prefix-size 1.5))
   (setq org-todo-keywords
-      '((sequence "TODO" "|" "DONE" "CANCELLED")))
+        '((sequence "TODO(t)" "FUTURE(f)" "|" "DONE(d!)" "CANCELLED(c)")))
+  ;; (setq org-log-into-drawer t)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale latex-prefix-size))
   (setq org-startup-indented t)
   (setq org-startup-with-latex-preview t)
@@ -168,6 +185,7 @@
         (if on-laptop
             " ↴"
           " ⤵"))
+  (add-to-list 'org-modules 'org-habit t)
   (setq org-file-apps
         '((auto-mode . emacs)
           ("\\.mm\\'" . default)
@@ -179,7 +197,17 @@
   (setq org-return-follows-link t)
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)))
-  (setq org-confirm-babel-evaluate nil))
+  (setq org-confirm-babel-evaluate nil)
+  (add-hook 'org-agenda-mode-hook (lambda ()
+                                    (local-set-key (kbd "d")
+                                                   (lambda ()
+                                                     (interactive)
+                                                     (org-agenda-todo 'done)))))
+  (add-hook 'org-mode-hook (lambda ()
+                             (local-set-key (kbd "C-t")
+                                            (lambda ()
+                                              (interactive)
+                                              (org-todo 'done))))))
 
 (use-package doom-themes
   :ensure t
@@ -260,15 +288,7 @@
   :config
   (global-undo-tree-mode))
 
-(use-package key-chord
-  :ensure t)
 
-(use-package evil
-  :ensure t
-  :hook (evil-mode . key-chord-mode)
-  :config
-  (setq key-chord-two-keys-delay 0.5)
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state))
 
 ;; (use-package counsel
 ;;   :ensure t
@@ -373,7 +393,9 @@
   (defvar company-lsp-enable-snippet nil))
 
 (use-package haskell-mode
-  :ensure t)
+  :ensure t
+  :config
+  (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
 
 (use-package dante
   :ensure t
@@ -385,6 +407,7 @@
   (add-hook 'haskell-mode-hook 'flycheck-mode)
   (put 'dante-repl-command-line 'safe-local-variable (lambda (_) t))
   (put 'haskell-process-type 'safe-local-variable (lambda (_) t))
+  (put 'dante-methods 'safe-local-variable (lambda (_) t))
 
   (add-hook 'haskell-mode-hook 'dante-mode))
 
