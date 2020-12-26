@@ -20,7 +20,7 @@
   :bind (("C-c j" . toggle-terminal-horizontal)
          ("C-c C-j" . toggle-terminal-vertical)
          ("C-c J" . new-terminal)
-         ("C-j" . newline-and-indent)
+         ;; ("C-j" . newline-and-indent)
          ("C-'" . comment-line)
          ("C-z" . nil)
          ("C-x w" . kill-ring-save))
@@ -39,12 +39,16 @@
   (setq mouse-wheel-scroll-amount '(1))
   (setq mouse-wheel-progressive-speed nil)
   (setq default-directory org-directory)
-  (if on-laptop
-      (set-face-attribute 'default nil :font "Source Code Pro") ;; Source Code Pro, DejaVu Sans Mono
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono"))
-  (if on-laptop
-      (set-face-attribute 'default nil :height 102)
-    (set-face-attribute 'default nil :height 100)))
+  (defvar preferred-face-font
+    (if on-laptop
+        "Source Code Pro"
+      "DejaVu Sans Mono"))
+  (defvar preferred-face-size
+    (if on-laptop
+        102
+      100))
+  (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
+  (set-face-attribute 'default nil :height preferred-face-size))
 
 (use-package lcr
   :ensure t)
@@ -60,10 +64,18 @@
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
   (evil-define-key 'normal prog-mode-map (kbd "å") 'evil-first-non-blank)
+  (add-hook 'vterm-mode-hook 'evil-emacs-state)
+  (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
+  (add-hook 'haskell-error-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
   (key-chord-mode 1)
   (evil-mode 1)
   )
+
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package org
   :ensure t
@@ -79,7 +91,7 @@
   (defun prettify-checkboxes ()
     (add-hook 'org-mode-hook (lambda ()
                                "Beautify Org Checkbox Symbol"
-                               (push '("[ ]" .  "☐") prettify-symbols-alist)
+                               (push '("[ ]" . "☐" ) prettify-symbols-alist)
                                (push '("[X]" . "☑" ) prettify-symbols-alist)
                                (push '("[-]" . "❍" ) prettify-symbols-alist)
                                (prettify-symbols-mode)))
@@ -91,8 +103,69 @@
      `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
         1 'org-checkbox-done-text prepend))
      'append))
+  (defun config-org-evil ()
+    (add-hook 'org-agenda-mode-hook
+              (lambda ()
+                (local-set-key (kbd "j") 'next-line)
+                (local-set-key (kbd "k") 'previous-line)
+                (local-set-key (kbd "l") 'evil-forward-char)
+                (local-set-key (kbd "h") 'evil-backward-char)
+                (local-set-key (kbd "M-l") 'org-agenda-log-mode))))
+  (defvar org-captures-path (concat org-directory "captures.org"))
+  (defvar org-todos-path (concat org-directory "todos.org"))
+  (defvar org-school-path (concat org-directory "skola.org"))
+  (defvar org-capture-templates
+    '(("t" "Todo" entry (file org-todos-path)
+       "* TODO %?\n%U" :empty-lines 1)
+      ("n" "Note" entry (file org-captures-path)
+       "* NOTE %?\n%U" :empty-lines 1)
+      ("l" "Läxa/prov" entry (file+headline org-school-path "Prov _o_ sånt")
+       "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)))
+  (defvar latex-prefix-size 1.3)
+  (if on-laptop
+      (setq latex-prefix-size 1.5))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "FUTURE(f)" "|" "DONE(d!)" "CANCELLED(c)")))
+  (setq org-tags-column -55)
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale latex-prefix-size))
+  (setq org-startup-indented t)
+  (setq org-startup-with-latex-preview t)
+  (setq org-hide-emphasis-markers t)
+  (setq org-agenda-files (list org-directory))
+  (setq org-log-done t)
+  (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, »
+        (if on-laptop
+            " ↴"
+          " ⤵"))
+  (setq org-file-apps
+        '((auto-mode . emacs)
+          ("\\.mm\\'" . default)
+          ("\\.x?html?\\'" . default)
+          ("\\.pdf\\'" . "okular %s")))
+  (setq org-deadline-warning-days 7)
+  (setq org-highlight-latex-and-related '(latex script entities))
+  (setq org-return-follows-link t)
+  (setq org-confirm-babel-evaluate nil)
+  ;; (setq org-log-into-drawer t)
+  (prettify-checkboxes)
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((python . t)))
+  (add-to-list 'org-modules 'org-habit t)
+  (add-hook 'org-agenda-mode-hook (lambda ()
+                                    (local-set-key (kbd "d")
+                                                   (lambda ()
+                                                     (interactive)
+                                                     (org-agenda-todo 'done)))))
+  ;; (add-hook 'org-mode-hook (lambda ()
+  ;;                            (local-set-key (kbd "C-t")
+  ;;                                           (lambda ()
+  ;;                                             (interactive)
+  ;;                                             (org-todo 'done)))))
+  (config-org-evil))
 
-  ;; --- LATEX ----------
+(use-package org
+  :config
+  ;; Fix latex fragments in org.
   (defvar org-latex-fragment-last nil
     "Holds last fragment/environment you were on.")
   (defvar org-latex-fragment-delay 0.4)
@@ -155,59 +228,7 @@
       (error nil)))
   (add-hook 'post-command-hook 'org-latex-fragment-toggle-auto)
   (setq org-latex-fragment-toggle-helper (byte-compile 'org-latex-fragment-toggle-helper))
-  (setq org-latex-fragment-toggle-auto (byte-compile 'org-latex-fragment-toggle-auto))
-  ;; --- /LATEX ---------
-
-  (defvar org-captures-path (concat org-directory "captures.org"))
-  (defvar org-todos-path (concat org-directory "todos.org"))
-  (defvar org-school-path (concat org-directory "skola.org"))
-  (setq org-tags-column -55)
-  (defvar org-capture-templates
-    '(("t" "Todo" entry (file org-todos-path)
-       "* TODO %?\n%U" :empty-lines 1)
-      ("n" "Note" entry (file org-captures-path)
-       "* NOTE %?\n%U" :empty-lines 1)
-      ("l" "Läxa/prov" entry (file+headline org-school-path "Prov _o_ sånt")
-       "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)))
-  (defvar latex-prefix-size 1.3)
-  (if on-laptop
-      (setq latex-prefix-size 1.5))
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "FUTURE(f)" "|" "DONE(d!)" "CANCELLED(c)")))
-  ;; (setq org-log-into-drawer t)
-  (setq org-format-latex-options (plist-put org-format-latex-options :scale latex-prefix-size))
-  (setq org-startup-indented t)
-  (setq org-startup-with-latex-preview t)
-  (setq org-hide-emphasis-markers t)
-  (setq org-agenda-files (list org-directory))
-  (setq org-log-done t)
-  (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, »
-        (if on-laptop
-            " ↴"
-          " ⤵"))
-  (add-to-list 'org-modules 'org-habit t)
-  (setq org-file-apps
-        '((auto-mode . emacs)
-          ("\\.mm\\'" . default)
-          ("\\.x?html?\\'" . default)
-          ("\\.pdf\\'" . "okular %s")))
-  (setq org-deadline-warning-days 7)
-  (prettify-checkboxes)
-  (setq org-highlight-latex-and-related '(latex script entities))
-  (setq org-return-follows-link t)
-  (org-babel-do-load-languages
-   'org-babel-load-languages '((python . t)))
-  (setq org-confirm-babel-evaluate nil)
-  (add-hook 'org-agenda-mode-hook (lambda ()
-                                    (local-set-key (kbd "d")
-                                                   (lambda ()
-                                                     (interactive)
-                                                     (org-agenda-todo 'done)))))
-  (add-hook 'org-mode-hook (lambda ()
-                             (local-set-key (kbd "C-t")
-                                            (lambda ()
-                                              (interactive)
-                                              (org-todo 'done))))))
+  (setq org-latex-fragment-toggle-auto (byte-compile 'org-latex-fragment-toggle-auto)))
 
 (use-package doom-themes
   :ensure t
