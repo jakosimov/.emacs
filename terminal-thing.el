@@ -119,7 +119,8 @@
          (buffers (seq-filter (lambda (s) (string-prefix-p actual-term-name s))
                               buffer-names))
          (name (ivy-read "Switch to terminal: "
-                         buffers)))
+                         buffers
+                         :preselect 1)))
     (set-window-dedicated-p (selected-window) nil)
     (switch-to-buffer name)
     (set-window-dedicated-p (selected-window) t)))
