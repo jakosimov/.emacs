@@ -23,7 +23,8 @@
          ;; ("C-j" . newline-and-indent)
          ("C-'" . comment-line)
          ("C-z" . nil)
-         ("C-x w" . kill-ring-save))
+         ("C-x w" . kill-ring-save)
+         ("C-ä" . previous-buffer))
   :hook (text-mode . visual-line-mode)
   :config
   (tool-bar-mode -1) ;; The thing with big icons.
@@ -235,66 +236,6 @@
   (setq org-latex-fragment-toggle-helper (byte-compile 'org-latex-fragment-toggle-helper))
   (setq org-latex-fragment-toggle-auto (byte-compile 'org-latex-fragment-toggle-auto)))
 
-(use-package doom-themes
-  :ensure t
-  :config
-  (defvar dark-theme 'doom-gruvbox) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
-  (defvar light-theme 'doom-one-light)  ;; doom-one-light
-  (defvar preferred-theme dark-theme)
-  (defun switch-theme (theme)
-    (mapc #'disable-theme custom-enabled-themes)
-    (load-theme theme 'no-confirm))
-  (defun is-dark-theme ()
-    (eq preferred-theme dark-theme))
-  (defun fix-org-headlines ()
-    (with-eval-after-load 'org
-      (set-face-attribute 'org-level-1 nil :height 1.3)
-      (set-face-attribute 'org-level-2 nil :height 1.2)
-      (set-face-attribute 'org-level-3 nil :height 1.1)
-      (set-face-attribute 'org-level-4 nil :height 1.0)
-      (set-face-attribute 'org-level-5 nil :height 1.0)))
-  (defun fix-org-blocks ()
-    (with-eval-after-load 'org
-      (let* ((alpha (if (is-dark-theme) 0.1 0.03))
-             (orig (face-attribute 'default :background))
-             (c (doom-darken orig alpha))
-             (begin-fg
-              (if (is-dark-theme)
-                  (doom-lighten c 0.2)
-                (doom-darken c 0.3))))
-        (set-face-attribute 'org-block-begin-line nil
-                            :background c
-                            :foreground begin-fg)
-        (set-face-attribute 'org-block-end-line nil
-                            :background c
-                            :foreground begin-fg)
-        (set-face-attribute 'org-block nil
-                            :background c))))
-  (defun fix-doom-dracula ()
-    (if (eq preferred-theme 'doom-dracula)
-        (progn (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
-               (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
-               (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold))))
-  (defun load-preferred-theme ()
-    (switch-theme preferred-theme)
-    (fix-org-blocks)
-    (fix-org-headlines)
-    (fix-doom-dracula))
-  (defun invert-theme ()
-    (interactive)
-    (if (eq preferred-theme dark-theme)
-        (setq preferred-theme light-theme)
-      (setq preferred-theme dark-theme))
-    (load-preferred-theme))
-  (if client-enabled
-      (add-hook 'after-make-frame-functions (lambda (frame)
-                                              (load-preferred-theme))))
-
-  (load-preferred-theme)
-  (doom-themes-org-config))
-
-
-
 (use-package magit
   :ensure t)
 
@@ -495,5 +436,63 @@
 
   (if client-enabled
       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))))
+
+(use-package doom-themes
+  :ensure t
+  :config
+  (defvar dark-theme 'doom-gruvbox) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
+  (defvar light-theme 'doom-one-light)  ;; doom-one-light
+  (defvar preferred-theme dark-theme)
+  (defun switch-theme (theme)
+    (mapc #'disable-theme custom-enabled-themes)
+    (load-theme theme 'no-confirm))
+  (defun is-dark-theme ()
+    (eq preferred-theme dark-theme))
+  (defun fix-org-headlines ()
+    (with-eval-after-load 'org
+      (set-face-attribute 'org-level-1 nil :height 1.3)
+      (set-face-attribute 'org-level-2 nil :height 1.2)
+      (set-face-attribute 'org-level-3 nil :height 1.1)
+      (set-face-attribute 'org-level-4 nil :height 1.0)
+      (set-face-attribute 'org-level-5 nil :height 1.0)))
+  (defun fix-org-blocks ()
+    (with-eval-after-load 'org
+      (let* ((alpha (if (is-dark-theme) 0.1 0.03))
+             (orig (face-attribute 'default :background))
+             (c (doom-darken orig alpha))
+             (begin-fg
+              (if (is-dark-theme)
+                  (doom-lighten c 0.2)
+                (doom-darken c 0.3))))
+        (set-face-attribute 'org-block-begin-line nil
+                            :background c
+                            :foreground begin-fg)
+        (set-face-attribute 'org-block-end-line nil
+                            :background c
+                            :foreground begin-fg)
+        (set-face-attribute 'org-block nil
+                            :background c))))
+  (defun fix-doom-dracula ()
+    (if (eq preferred-theme 'doom-dracula)
+        (progn (set-face-attribute 'font-lock-function-name-face nil :weight 'bold)
+               (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
+               (set-face-attribute 'font-lock-variable-name-face nil :weight 'bold))))
+  (defun load-preferred-theme ()
+    (switch-theme preferred-theme)
+    (fix-org-blocks)
+    (fix-org-headlines)
+    (fix-doom-dracula))
+  (defun invert-theme ()
+    (interactive)
+    (if (eq preferred-theme dark-theme)
+        (setq preferred-theme light-theme)
+      (setq preferred-theme dark-theme))
+    (load-preferred-theme))
+  (if client-enabled
+      (add-hook 'after-make-frame-functions (lambda (frame)
+                                              (load-preferred-theme))))
+
+  (load-preferred-theme)
+  (doom-themes-org-config))
 
 (provide 'init)
