@@ -24,7 +24,8 @@
          ("C-'" . comment-line)
          ("C-z" . nil)
          ("C-x w" . kill-ring-save)
-         ("C-ä" . previous-buffer))
+         ("C-§" . projectile-previous-project-buffer)
+         ("M-§" . projectile-next-project-buffer))
   :hook (text-mode . visual-line-mode)
   :config
   (tool-bar-mode -1) ;; The thing with big icons.
