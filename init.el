@@ -29,6 +29,11 @@
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
   (menu-bar-mode -1) ;; The ordinary menu bar.
+  (global-set-key (kbd "C-M-+") (lambda ()
+                                  (interactive)
+                                  (let ((window (selected-window)))
+                                    (make-frame)
+                                    (delete-window window))))
   (setq confirm-kill-processes nil)
   (setq inhibit-splash-screen t)
   (setq frame-title-format '("emacs"))
