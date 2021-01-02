@@ -127,7 +127,10 @@
       ("n" "Note" entry (file org-captures-path)
        "* NOTE %?\n%U" :empty-lines 1)
       ("l" "Läxa/prov" entry (file+headline org-school-path "Prov _o_ sånt")
-       "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)))
+       "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)
+      ("c" "Quick note" entry (file org-captures-path)
+       "* %?%^g" :empty-lines 1)))
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
   (defvar latex-prefix-size 1.3)
   (if on-laptop
       (setq latex-prefix-size 1.5))
