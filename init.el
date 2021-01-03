@@ -87,7 +87,9 @@
   :ensure t
   :bind (("C-c c" . org-capture)
          ("C-c a" . org-agenda)
-         ("C-c l" . org-store-link))
+         ("C-c l" . org-store-link)
+         :map org-mode-map
+         ("C-c h" . insert-http-link))
   :hook (org-mode . auto-revert-mode)
   :config
   (defun export-macro ()
@@ -113,19 +115,31 @@
     "Insert org link where default description is set to html title."
     (interactive)
     (let* ((url (read-string "URL: "))
-           (title (get-html-title-from-url url)))
-      (org-insert-link nil url title)))
-
+           (response (get-html-title-from-url url))
+           (title (car response))
+           (description (cdr response)))
+      (insert "+ ")
+      (org-insert-link nil url (concat title))
+      (if description
+          (insert (concat "\n  " description)))))
   (defun get-html-title-from-url (url)
     "Return content in <title> tag."
-    (let (x1 x2 (download-buffer (url-retrieve-synchronously url)))
+    (let (x1 x2 x3 x4 (download-buffer (url-retrieve-synchronously url)))
       (save-excursion
         (set-buffer download-buffer)
+        (set-buffer-multibyte t)
         (beginning-of-buffer)
         (setq x1 (search-forward "<title>"))
         (search-forward "</title>")
         (setq x2 (search-backward "<"))
-        (buffer-substring-no-properties x1 x2))))
+        (let ((title (buffer-substring-no-properties x1 x2)))
+          (beginning-of-buffer)
+          (if (not (search-forward "property=\"og:description\"" nil t))
+              (cons title nil)
+            (progn (setq x3 (search-forward "content=\""))
+                   (search-forward "\"")
+                   (setq x4 (search-backward "\""))
+                   (cons title (buffer-substring-no-properties x3 x4))))))))
   (defun config-org-evil ()
     (add-hook 'org-agenda-mode-hook
               (lambda ()
@@ -274,8 +288,6 @@
   :ensure t
   :config
   (global-undo-tree-mode))
-
-
 
 ;; (use-package counsel
 ;;   :ensure t
