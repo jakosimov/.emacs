@@ -76,8 +76,7 @@
   (add-hook 'haskell-error-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
   (key-chord-mode 1)
-  (evil-mode 1)
-  )
+  (evil-mode 1))
 
 (use-package evil-surround
   :ensure t
@@ -110,6 +109,23 @@
      `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
         1 'org-checkbox-done-text prepend))
      'append))
+  (defun insert-http-link ()
+    "Insert org link where default description is set to html title."
+    (interactive)
+    (let* ((url (read-string "URL: "))
+           (title (get-html-title-from-url url)))
+      (org-insert-link nil url title)))
+
+  (defun get-html-title-from-url (url)
+    "Return content in <title> tag."
+    (let (x1 x2 (download-buffer (url-retrieve-synchronously url)))
+      (save-excursion
+        (set-buffer download-buffer)
+        (beginning-of-buffer)
+        (setq x1 (search-forward "<title>"))
+        (search-forward "</title>")
+        (setq x2 (search-backward "<"))
+        (buffer-substring-no-properties x1 x2))))
   (defun config-org-evil ()
     (add-hook 'org-agenda-mode-hook
               (lambda ()
@@ -444,7 +460,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (defvar dark-theme 'doom-gruvbox) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
+  (defvar dark-theme 'doom-monokai-classic) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
   (defvar light-theme 'doom-one-light)  ;; doom-one-light
   (defvar preferred-theme dark-theme)
   (defun switch-theme (theme)
