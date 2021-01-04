@@ -4,3 +4,5 @@ rm auto-save-list/ -rd
 rm elpa/ -rd
 rm projectile-bookmarks.eld
 rm recentf
+rm session.*
+rm url/ -rd

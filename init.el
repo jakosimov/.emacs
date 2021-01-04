@@ -319,14 +319,26 @@
 (use-package doom-modeline
   :ensure t
   :init ;; Run `all-the-icons-install-fonts' as well
-  (defun enable-doom-modeline-icons (_frame) ;; For emacsclient
-    (setq doom-modeline-icon t))
   (if on-laptop
-      (setq doom-modeline-height 31))
+      (setq doom-modeline-height 31)
+    (setq doom-modeline-height 31))
   (doom-modeline-mode 1)
   (if client-enabled
       (add-hook 'after-make-frame-functions
-                #'enable-doom-modeline-icons)))
+                #'enable-doom-modeline-icons))
+  :config
+  (defun enable-doom-modeline-icons (_frame) ;; For emacsclient
+    (setq doom-modeline-icon t))
+  (setq doom-modeline-percent-position nil)
+
+  (doom-modeline-def-modeline 'my-doom-mode-line
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info major-mode process checker vcs " "))
+
+  (defun setup-custom-doom-modeline ()
+    (interactive)
+    (doom-modeline-set-modeline 'my-doom-mode-line 'default))
+  (setup-custom-doom-modeline))
 
 (use-package projectile
   :ensure t
