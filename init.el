@@ -190,6 +190,7 @@
   (org-babel-do-load-languages
    'org-babel-load-languages '((python . t)))
   (add-to-list 'org-modules 'org-habit t)
+  (setq org-habit-show-habits nil)
   (add-hook 'org-agenda-mode-hook (lambda ()
                                     (local-set-key (kbd "d")
                                                    (lambda ()
