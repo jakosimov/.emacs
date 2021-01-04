@@ -45,7 +45,6 @@
   (setq-default truncate-lines t)
   (setq mouse-wheel-scroll-amount '(1))
   (setq mouse-wheel-progressive-speed nil)
-  (setq default-directory org-directory)
   (defvar preferred-face-font
     (if on-laptop
         "Source Code Pro"
@@ -111,14 +110,14 @@
      `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
         1 'org-checkbox-done-text prepend))
      'append))
-  (defun insert-http-link ()
+  (defun insert-http-link (url &optional start)
     "Insert org link where default description is set to html title."
-    (interactive)
-    (let* ((url (read-string "URL: "))
-           (response (get-html-title-from-url url))
+    (interactive "sURL: ")
+    (let* ((response (get-html-title-from-url url))
            (title (car response))
            (description (cdr response)))
-      (insert "+ ")
+      (if (not start)
+          (insert "+ "))
       (org-insert-link nil url (concat title))
       (if description
           (insert (concat "\n  " description)))))
@@ -143,8 +142,8 @@
   (defun config-org-evil ()
     (add-hook 'org-agenda-mode-hook
               (lambda ()
-                (local-set-key (kbd "j") 'next-line)
-                (local-set-key (kbd "k") 'previous-line)
+                (local-set-key (kbd "j") 'org-agenda-next-line)
+                (local-set-key (kbd "k") 'org-agenda-previous-line)
                 (local-set-key (kbd "l") 'evil-forward-char)
                 (local-set-key (kbd "h") 'evil-backward-char)
                 (local-set-key (kbd "M-l") 'org-agenda-log-mode))))
@@ -159,7 +158,7 @@
       ("l" "Läxa/prov" entry (file+headline org-school-path "Prov _o_ sånt")
        "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)
       ("c" "Quick note" entry (file org-captures-path)
-       "* %?%^g" :empty-lines 1)))
+       "* %?%^g\n%U" :empty-lines 1)))
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
   (defvar latex-prefix-size 1.3)
   (if on-laptop
@@ -196,11 +195,6 @@
                                                    (lambda ()
                                                      (interactive)
                                                      (org-agenda-todo 'done)))))
-  ;; (add-hook 'org-mode-hook (lambda ()
-  ;;                            (local-set-key (kbd "C-t")
-  ;;                                           (lambda ()
-  ;;                                             (interactive)
-  ;;                                             (org-todo 'done)))))
   (config-org-evil))
 
 (use-package org
