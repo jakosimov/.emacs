@@ -320,7 +320,7 @@
   :ensure t
   :init ;; Run `all-the-icons-install-fonts' as well
   (if on-laptop
-      (setq doom-modeline-height 31)
+      (setq doom-modeline-height 38)
     (setq doom-modeline-height 31))
   (doom-modeline-mode 1)
   (if client-enabled
