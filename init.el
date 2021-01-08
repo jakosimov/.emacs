@@ -65,6 +65,8 @@
 (use-package evil
   :ensure t
   ;; :hook (evil-mode . key-chord-mode)
+  :init
+  (setq evil-respect-visual-line-mode t)
   :config
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
