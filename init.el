@@ -64,7 +64,6 @@
 
 (use-package evil
   :ensure t
-  ;; :hook (evil-mode . key-chord-mode)
   :init
   (setq evil-respect-visual-line-mode t)
   :config
@@ -72,7 +71,11 @@
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
   (evil-define-key 'normal prog-mode-map (kbd "å") 'evil-first-non-blank)
+  (with-eval-after-load 'evil-maps
+    (define-key evil-motion-state-map (kbd "RET") nil)
+    (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
   (add-hook 'vterm-mode-hook 'evil-emacs-state)
+  (add-hook 'dashboard-mode-hook 'evil-emacs-state)
   (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
   (add-hook 'haskell-error-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
@@ -117,12 +120,13 @@
     (interactive "sURL: ")
     (let* ((response (get-html-title-from-url url))
            (title (car response))
-           (description (cdr response)))
+           (description (cdr response))
+           (emphasis-marker "="))
       (if (not start)
           (insert "+ "))
       (org-insert-link nil url (concat title))
       (if description
-          (insert (concat "\n  " description)))))
+          (insert (concat "\n  " emphasis-marker description emphasis-marker)))))
   (defun get-html-title-from-url (url)
     "Return content in <title> tag."
     (let (x1 x2 x3 x4 (download-buffer (url-retrieve-synchronously url)))
@@ -160,7 +164,7 @@
       ("l" "Läxa/prov" entry (file+headline org-school-path "Prov _o_ sånt")
        "* TODO %^{Beskrivning}\n DEADLINE: %^t" :empty-lines 1)
       ("c" "Quick note" entry (file org-captures-path)
-       "* %?%^g\n%U" :empty-lines 1)))
+       "* %? %^g\n%U" :empty-lines 1)))
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
   (defvar latex-prefix-size 1.3)
   (if on-laptop
@@ -174,7 +178,7 @@
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list org-directory))
   (setq org-log-done t)
-  (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, »
+  (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, », ▼, ☟
         (if on-laptop
             " ↴"
           " ⤵"))
@@ -474,6 +478,9 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner 'logo)
+  (setq dashboard-items '((projects . 10)
+                          (bookmarks . 5)
+                          (recents . 5)))
 
   (if client-enabled
       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))))
