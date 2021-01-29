@@ -69,9 +69,12 @@
   :config
   (defun new-line-under ()
     (interactive)
-    (evil-open-below 1)
-    (evil-normal-state)
-    (evil-previous-line))
+    (save-excursion (evil-open-below 1)
+                    (evil-normal-state)))
+  (defun new-line-above ()
+    (interactive)
+    (save-excursion (evil-open-above 1)
+                    (evil-normal-state)))
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
@@ -79,6 +82,7 @@
   (with-eval-after-load 'evil-maps
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
     (evil-define-key 'normal prog-mode-map (kbd "RET") 'new-line-under)
+    (evil-define-key 'normal prog-mode-map (kbd "<S-return>") 'new-line-above)
     (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
   (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (add-hook 'dashboard-mode-hook 'evil-emacs-state)
