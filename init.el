@@ -360,7 +360,8 @@
 (use-package yasnippet
   :ensure t
   :hook ((org-mode . yas-minor-mode)
-         (latex-mode . yas-minor-mode))
+         (latex-mode . yas-minor-mode)
+         (prog-mode . yas-minor-mode))
   :config
   (yas-reload-all))
 
