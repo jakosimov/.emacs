@@ -78,6 +78,8 @@
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
   (key-chord-define evil-replace-state-map "jj" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "JJ" 'evil-normal-state)
+  (key-chord-define evil-replace-state-map "JJ" 'evil-normal-state)
   (evil-define-key 'normal prog-mode-map (kbd "å") 'evil-first-non-blank)
   (with-eval-after-load 'evil-maps
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
@@ -435,7 +437,9 @@
   (add-hook 'haskell-mode-hook 'dante-mode))
 
 (use-package direnv
-  :ensure t)
+  :ensure t
+  :config
+  (direnv-mode))
 
 (use-package lsp-ui
   :ensure t)
