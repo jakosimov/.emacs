@@ -1,0 +1,36 @@
+# -*- mode: snippet -*-
+# name: template
+# key: template
+# --
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <math.h>
+#include <tuple>
+
+#define rep(i, a, b) for (int i = a ; i < b ; i++)
+#define iter(i, arr) for (int i = 0 ; i < arr.size() ; i++)
+#define trav(a, arr) for (auto a : arr)
+#define all(arr) arr.begin(), arr.end()
+#define sz(arr) (int)(arr).size()
+
+using std::vector;
+using std::sort;
+using std::cout;
+using std::endl;
+using std::max;
+using std::min;
+using std::get;
+
+typedef std::pair<int,int> Pair;
+typedef long long ll;
+
+
+int main() {
+
+  return 0;
+}
+
+
+

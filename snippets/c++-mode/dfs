@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: dfs
+# key: dfs
+# --
+
+int startingPoint = $1;
+std::queue<int> queue;
+vector<int> distances($2.size(), -1);
+vector<int> parent($2.size(), -2);
+queue.push(startingPoint);
+distances[startingPoint] = 0;
+parent[startingPoint] = -1;
+while (!queue.empty()) {
+  int current = queue.front();
+  queue.pop();
+  for (int neigh : $2[current]) {
+    if (distances[neigh] != -1) {
+      continue;
+    }
+    distances[neigh] = distances[current] + 1;
+    parent[neigh] = current;
+    queue.push(neigh);
+  }
+}
