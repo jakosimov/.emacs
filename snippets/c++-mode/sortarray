@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: sortarray
+# key: sortarray
+# --
+
+sort(all($1));

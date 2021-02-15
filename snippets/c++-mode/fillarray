@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: fillarray
+# key: fillarray
+# --
+
+vector<int> $1($2);
+for (int i = 0 ; i < $2 ; i++) {
+  std::cin >> $1[i];
+}
