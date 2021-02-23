@@ -2,9 +2,7 @@
 # name: debug
 # key: debug
 # --
-
 `"\n"`
 #ifdef DEBUG
        $0
 #endif
-
