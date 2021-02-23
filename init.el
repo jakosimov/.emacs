@@ -358,10 +358,10 @@
   :ensure t
   :bind (:map projectile-mode-map
               ("C-c C-f" . projectile-find-file)
-              ("C-c p" . projectile-switch-project)
               ("C-c b" . projectile-switch-to-buffer))
   :config
   (projectile-mode 1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-completion-system 'ivy))
 
 (use-package org-superstar
