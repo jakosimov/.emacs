@@ -15,7 +15,10 @@
 #define all(arr) arr.begin(), arr.end()
 #define sz(arr) (int)(arr).size()
 
+#define DEBUG
+
 using std::vector;
+using std::string;
 using std::sort;
 using std::cout;
 using std::endl;
@@ -23,8 +26,10 @@ using std::max;
 using std::min;
 using std::get;
 
-typedef std::pair<int,int> Pair;
 typedef long long ll;
+typedef std::pair<ll,ll> Pair;
+typedef vector<ll> vi;
+typedef vector<Pair> vii;
 
 
 int main() {
