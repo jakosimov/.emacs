@@ -14,6 +14,7 @@
 (defvar on-laptop
   (equal (system-name) "yoga"))
 (defvar org-directory "~/Sync/notes/")
+(defvar journal-directory (concat org-directory "journal/"))
 (defvar client-enabled nil)
 
 (use-package emacs
@@ -188,7 +189,7 @@
   (setq org-startup-indented t)
   (setq org-startup-with-latex-preview t)
   (setq org-hide-emphasis-markers t)
-  (setq org-agenda-files (list org-directory))
+  (setq org-agenda-files (list org-directory journal-directory))
   (setq org-log-done t)
   (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, », ▼, ☟
         (if on-laptop
@@ -558,5 +559,37 @@
 
   (load-preferred-theme)
   (doom-themes-org-config))
+
+(use-package org-journal
+  :ensure t
+  ;; :bind (:map org-journal-mode-map
+  ;;             ("C-s" . org-schedule))
+  :config
+  (setq org-journal-file-type 'monthly)
+  (setq org-journal-dir "~/Sync/notes/journal/")
+  (global-set-key (kbd "C-c å") (lambda ()
+                                  (interactive)
+                                  (org-journal-new-entry 1)))
+  (global-set-key (kbd "C-c C-å") (lambda ()
+                                  (interactive)
+                                  (org-journal-new-entry nil)
+                                  (evil-insert-state)))
+  (add-hook 'org-journal-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-s") (lambda ()
+                                           (interactive)
+                                           (org-schedule nil "+0d")))))
+  ;; (evil-define-key 'normal org-journal-mode-map (kbd "C-s")
+  ;;   (lambda ()
+  ;;     (interactive)
+  ;;     (org-journal-new-entry nil)
+  ;;     (insert "TODO ")
+  ;;     (org-schedule nil "+0d")
+  ;;     (evil-insert-state)))
+  (setq org-extend-today-until 4
+        ;; org-journal-enable-agenda-integration t
+        org-journal-date-format "%a, %d-%m-%Y"
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-time-format ""))
 
 (provide 'init)
