@@ -45,17 +45,7 @@
   (setq-default indent-tabs-mode nil)
   (setq-default truncate-lines t)
   (setq mouse-wheel-scroll-amount '(1))
-  (setq mouse-wheel-progressive-speed nil)
-  (defvar preferred-face-font
-    (if on-laptop
-        "Source Code Pro"
-      "DejaVu Sans Mono"))
-  (defvar preferred-face-size
-    (if on-laptop
-        102
-      100))
-  (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
-  (set-face-attribute 'default nil :height preferred-face-size))
+  (setq mouse-wheel-progressive-speed nil))
 
 (use-package lcr
   :ensure t)
@@ -505,6 +495,18 @@
 (use-package doom-themes
   :ensure t
   :config
+  (defvar source-code "Source Code Pro:demibold") ;; Om light font "Source Code Pro:demibold"
+  (defvar deja-vu "DejaVu Sans Mono")
+  (defvar preferred-face-font
+    (if on-laptop
+        source-code
+      deja-vu))
+  (defvar preferred-face-size
+    (if on-laptop
+        102
+      100)) ;; Om source-code: 107
+  (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
+  (set-face-attribute 'default nil :height preferred-face-size)
   (defvar dark-theme 'doom-monokai-classic) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
   (defvar light-theme 'doom-one-light)  ;; doom-one-light
   (defvar preferred-theme dark-theme)
@@ -556,7 +558,6 @@
   (if client-enabled
       (add-hook 'after-make-frame-functions (lambda (frame)
                                               (load-preferred-theme))))
-
   (load-preferred-theme)
   (doom-themes-org-config))
 
