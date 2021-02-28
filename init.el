@@ -73,9 +73,9 @@
   (key-chord-define evil-replace-state-map "JJ" 'evil-normal-state)
   (evil-define-key 'normal prog-mode-map (kbd "å") 'evil-first-non-blank)
   (with-eval-after-load 'evil-maps
+    (evil-define-key 'normal 'global (kbd "RET") 'new-line-under)
+    (evil-define-key 'normal 'global (kbd "<S-return>") 'new-line-above)
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
-    (evil-define-key 'normal prog-mode-map (kbd "RET") 'new-line-under)
-    (evil-define-key 'normal prog-mode-map (kbd "<S-return>") 'new-line-above)
     (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
   (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (add-hook 'dashboard-mode-hook 'evil-emacs-state)
@@ -495,7 +495,14 @@
 (use-package doom-themes
   :ensure t
   :config
-  (defvar source-code "Source Code Pro:demibold") ;; Om light font "Source Code Pro:demibold"
+  (defvar dark-theme 'doom-monokai-classic) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
+  (defvar light-theme 'doom-one-light)  ;; doom-one-light
+  (defvar preferred-theme dark-theme)
+  (defun is-dark-theme ()
+    (eq preferred-theme dark-theme))
+  (defvar source-code
+    (concat "Source Code Pro"
+            (if (not (is-dark-theme)) ":demibold" ""))) ;; Om light font "Source Code Pro:demibold"
   (defvar deja-vu "DejaVu Sans Mono")
   (defvar preferred-face-font
     (if on-laptop
@@ -507,14 +514,9 @@
       100)) ;; Om source-code: 107
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
-  (defvar dark-theme 'doom-monokai-classic) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
-  (defvar light-theme 'doom-one-light)  ;; doom-one-light
-  (defvar preferred-theme dark-theme)
   (defun switch-theme (theme)
     (mapc #'disable-theme custom-enabled-themes)
     (load-theme theme 'no-confirm))
-  (defun is-dark-theme ()
-    (eq preferred-theme dark-theme))
   (defun fix-org-headlines ()
     (with-eval-after-load 'org
       (set-face-attribute 'org-level-1 nil :height 1.3)
