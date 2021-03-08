@@ -12,14 +12,6 @@
 
 #define DEBUG
 
-// using std::vector;
-// using std::string;
-// using std::sort;
-// using std::cout;
-// using std::endl;
-// using std::max;
-// using std::min;
-// using std::get;
 using namespace std;
 
 typedef long long ll;
