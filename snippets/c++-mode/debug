@@ -3,6 +3,6 @@
 # key: debug
 # --
 `"\n"`
-#ifdef DEBUG
+#ifdef dbg
        $0
 #endif
