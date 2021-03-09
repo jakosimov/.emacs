@@ -12,14 +12,6 @@
 
 #define DEBUG
 
-// using std::vector;
-// using std::string;
-// using std::sort;
-// using std::cout;
-// using std::endl;
-// using std::max;
-// using std::min;
-// using std::get;
 using namespace std;
 
 typedef long long ll;
@@ -32,6 +24,21 @@ typedef vector<Pair> vii;
 #define trav(a, arr) for (auto a : arr)
 #define all(arr) arr.begin(), arr.end()
 #define sz(arr) (ll)(arr).size()
+
+#define LL_INF 9223372036854775807ll
+
+string printArray(vi arr) {
+  string result;
+  result += "{ ";
+  iter(i, arr) {
+    result += to_string(arr[i]);
+    if (i != sz(arr)-1) {
+      result += ", ";
+    }
+  }
+  result += " }";
+  return result;
+}
 
 int main() {
 
