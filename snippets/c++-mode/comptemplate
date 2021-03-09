@@ -3,14 +3,7 @@
 # key: template
 # --
 
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <math.h>
-#include <tuple>
-
-
-#define DEBUG
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -24,10 +17,13 @@ typedef vector<Pair> vii;
 #define trav(a, arr) for (auto a : arr)
 #define all(arr) arr.begin(), arr.end()
 #define sz(arr) (ll)(arr).size()
+#ifdef dbg
+#define print(x); cout << x << endl;
+#else
+#define print(x);
+#endif
 
-#define LL_INF 9223372036854775807ll
-
-string printArray(vi arr) {
+string arrString(vi arr) {
   string result;
   result += "{ ";
   iter(i, arr) {
@@ -40,7 +36,10 @@ string printArray(vi arr) {
   return result;
 }
 
+#define LL_INF 9223372036854775807ll
+
 int main() {
+  $0
 
   return 0;
 }
