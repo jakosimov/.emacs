@@ -25,6 +25,19 @@ typedef vector<Pair> vii;
 #define all(arr) arr.begin(), arr.end()
 #define sz(arr) (ll)(arr).size()
 
+string printArray(vi arr) {
+  string result;
+  result += "{ ";
+  iter(i, arr) {
+    result += to_string(arr[i]);
+    if (i != sz(arr)-1) {
+      result += ", ";
+    }
+  }
+  result += " }";
+  return result;
+}
+
 int main() {
 
   return 0;
