@@ -589,8 +589,6 @@
 
 (use-package org-journal
   :ensure t
-  ;; :bind (:map org-journal-mode-map
-  ;;             ("C-s" . org-schedule))
   :config
   (setq org-journal-file-type 'monthly)
   (setq org-journal-dir "~/Sync/notes/journal/")
@@ -606,18 +604,13 @@
               (local-set-key (kbd "C-s") (lambda ()
                                            (interactive)
                                            (org-schedule nil "+0d")))))
-  ;; (evil-define-key 'normal org-journal-mode-map (kbd "C-s")
-  ;;   (lambda ()
-  ;;     (interactive)
-  ;;     (org-journal-new-entry nil)
-  ;;     (insert "TODO ")
-  ;;     (org-schedule nil "+0d")
-  ;;     (evil-insert-state)))
   (setq org-extend-today-until 4
-        ;; org-journal-enable-agenda-integration t
         org-journal-date-format "%a, %d-%m-%Y"
         org-journal-file-format "%Y-%m-%d.org"
         org-journal-time-format ""))
+
+(use-package emacs
+  :bind (("C-c C-j" . toggle-terminal-vertical)))
 
 (provide 'init)
 (put 'scroll-left 'disabled nil)
