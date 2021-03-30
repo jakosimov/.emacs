@@ -251,7 +251,8 @@
       (sp-local-pair "\\[" "\\]")
       (sp-local-pair "$" "$"))
     (sp-local-pair 'org-mode "*" "*" :actions :rem)
-    (sp-local-pair 'org-mode "*" nil :actions :rem))
+    (sp-local-pair 'org-mode "*" nil :actions :rem)
+    (sp-local-pair 'org-mode "=" "=" :actions :rem))
   (configure-org-mode))
 
 (use-package treemacs
