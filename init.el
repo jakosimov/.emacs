@@ -218,10 +218,11 @@
 
   (add-hook 'haskell-mode-hook 'dante-mode))
 
-(use-package direnv
-  :ensure t
-  :config
-  (direnv-mode))
+(if (not on-laptop)
+    (use-package direnv
+      :ensure t
+      :config
+      (direnv-mode)))
 
 (use-package lsp-ui
   :ensure t)
