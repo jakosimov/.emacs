@@ -116,6 +116,18 @@
 ;;   :config
 ;;   (global-company-mode))
 
+;; (use-package unicode-fonts
+;;    :ensure t
+;;    :config
+;;     (unicode-fonts-setup))
+
+(use-package emojify
+  :ensure t
+  :hook (after-init . global-emojify-mode))
+
+(add-to-list 'load-path "~/.emacs.d/pomodoro/")
+(require 'pomodoro)
+
 (use-package doom-modeline
   :ensure t
   :init ;; Run `all-the-icons-install-fonts' as well
@@ -131,14 +143,22 @@
     (setq doom-modeline-icon t))
   (setq doom-modeline-percent-position nil)
 
+  (doom-modeline-def-segment doom-pomodoro
+    (concat
+     (doom-modeline-spc)
+     (propertize pomodoro-mode-line-string 'face
+                 'doom-modeline-urgent)
+     (doom-modeline-spc)))
+
   (doom-modeline-def-modeline 'my-doom-mode-line
-    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info doom-pomodoro)
     '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info major-mode process checker vcs " "))
 
   (defun setup-custom-doom-modeline ()
     (interactive)
     (doom-modeline-set-modeline 'my-doom-mode-line 'default))
-  (setup-custom-doom-modeline))
+  (setup-custom-doom-modeline)
+  (add-hook 'after-init-hook 'global-emojify-mode-line-mode))
 
 (use-package projectile
   :ensure t
@@ -304,6 +324,7 @@
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
   (defun switch-theme (theme)
+    (interactive)
     (mapc #'disable-theme custom-enabled-themes)
     (load-theme theme 'no-confirm))
   (defun fix-org-headlines ()
