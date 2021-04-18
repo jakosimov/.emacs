@@ -86,6 +86,9 @@
 (use-package magit
   :ensure t)
 
+(use-package centered-window
+  :ensure t)
+
 (use-package ivy
   :ensure t
   :config
@@ -123,7 +126,9 @@
 
 (use-package emojify
   :ensure t
-  :hook (after-init . global-emojify-mode))
+  :hook (after-init . global-emojify-mode)
+  :config
+  (setq emojify-composed-text-p nil)) ;; Fixar typ bullets i org-mode
 
 (add-to-list 'load-path "~/.emacs.d/pomodoro/")
 (require 'pomodoro)
@@ -334,7 +339,8 @@
       (set-face-attribute 'org-level-2 nil :height 1.2)
       (set-face-attribute 'org-level-3 nil :height 1.1)
       (set-face-attribute 'org-level-4 nil :height 1.0)
-      (set-face-attribute 'org-level-5 nil :height 1.0)))
+      (set-face-attribute 'org-level-5 nil :height 1.0)
+      (set-face-attribute 'org-headline-done nil :strike-through t)))
   (defun fix-org-blocks ()
     (with-eval-after-load 'org
       (let* ((alpha (if (is-dark-theme) 0.1 0.03))
