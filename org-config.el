@@ -90,8 +90,7 @@
     (interactive)
     (org-narrow-to-subtree)
     (push '(truncation nil right-arrow) fringe-indicator-alist)
-    (scroll-left (narrow-width-to-move) t)
-    (visual-line-mode 1)) ;; Verkar behövas (vet inte varför)
+    (scroll-left (narrow-width-to-move) t)) ;; TODO: Se bara till att den skrollar relativt till kanten (!!!)
   (defun my-widen-from-subtree ()
     (interactive)
     (widen)
@@ -115,6 +114,7 @@
   (setq org-hide-emphasis-markers t)
   (setq org-agenda-files (list org-directory journal-directory))
   (setq org-agenda-skip-deadline-if-done t)
+  (setq org-startup-folded t)
   ;; (setq org-log-done t)
   (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, », ▼, ☟
         (if on-laptop

@@ -30,7 +30,7 @@
          ("C-x w" . kill-ring-save)
          ("C-§" . projectile-previous-project-buffer)
          ("M-§" . projectile-next-project-buffer))
-  :hook (text-mode . visual-line-mode)
+  :hook (text-mode . refill-mode)
   :config
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
@@ -40,6 +40,7 @@
                                   (let ((window (selected-window)))
                                     (make-frame)
                                     (delete-window window))))
+  (setq-default fill-column 80)
   (setq confirm-kill-processes nil)
   (setq inhibit-splash-screen t)
   (setq frame-title-format '("emacs"))
@@ -341,10 +342,10 @@
   (defun fix-org-headlines ()
     (with-eval-after-load 'org
       (set-face-attribute 'org-level-1 nil :height 1.2)
-      (set-face-attribute 'org-level-2 nil :height 1.2)
-      (set-face-attribute 'org-level-3 nil :height 1.2)
-      (set-face-attribute 'org-level-4 nil :height 1.2)
-      (set-face-attribute 'org-level-5 nil :height 1.2)
+      (set-face-attribute 'org-level-2 nil :height 1.1)
+      (set-face-attribute 'org-level-3 nil :height 1.1)
+      (set-face-attribute 'org-level-4 nil :height 1.1)
+      (set-face-attribute 'org-level-5 nil :height 1.1)
       (set-face-attribute 'org-headline-done nil :strike-through t))
     (with-eval-after-load 'ivy
       (set-face-attribute 'ivy-org nil :height (face-attribute 'default :height))))
