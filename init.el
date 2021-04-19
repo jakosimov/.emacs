@@ -13,6 +13,10 @@
 
 (defvar on-laptop
   (equal (system-name) "yoga"))
+(defvar is-evening
+  (let ((current-hour (decoded-time-hour (decode-time (current-time)))))
+    (or (< current-hour 7)
+        (> current-hour 19))))
 (defvar org-directory "~/Sync/notes/")
 (defvar journal-directory (concat org-directory "journal/"))
 (defvar client-enabled nil)
@@ -314,7 +318,8 @@
   :config
   (defvar dark-theme 'doom-monokai-classic) ;; doom-dracula, doom-gruvbox, doom-monokai-classic
   (defvar light-theme 'doom-one-light)  ;; doom-one-light
-  (defvar preferred-theme light-theme)
+  (defvar preferred-theme
+    (if is-evening dark-theme light-theme))
   (defun is-dark-theme ()
     (eq preferred-theme dark-theme))
   (defvar source-code "Source Code Pro") ;; Om light font "Source Code Pro:demibold"
@@ -335,12 +340,14 @@
     (load-theme theme 'no-confirm))
   (defun fix-org-headlines ()
     (with-eval-after-load 'org
-      (set-face-attribute 'org-level-1 nil :height 1.3)
+      (set-face-attribute 'org-level-1 nil :height 1.2)
       (set-face-attribute 'org-level-2 nil :height 1.2)
-      (set-face-attribute 'org-level-3 nil :height 1.1)
-      (set-face-attribute 'org-level-4 nil :height 1.0)
-      (set-face-attribute 'org-level-5 nil :height 1.0)
-      (set-face-attribute 'org-headline-done nil :strike-through t)))
+      (set-face-attribute 'org-level-3 nil :height 1.2)
+      (set-face-attribute 'org-level-4 nil :height 1.2)
+      (set-face-attribute 'org-level-5 nil :height 1.2)
+      (set-face-attribute 'org-headline-done nil :strike-through t))
+    (with-eval-after-load 'ivy
+      (set-face-attribute 'ivy-org nil :height (face-attribute 'default :height))))
   (defun fix-org-blocks ()
     (with-eval-after-load 'org
       (let* ((alpha (if (is-dark-theme) 0.1 0.03))
