@@ -30,7 +30,6 @@
          ("C-x w" . kill-ring-save)
          ("C-§" . projectile-previous-project-buffer)
          ("M-§" . projectile-next-project-buffer))
-  :hook (text-mode . refill-mode)
   :config
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)

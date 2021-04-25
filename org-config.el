@@ -7,8 +7,10 @@
          :map org-mode-map
          ("C-c h" . insert-http-link)
          ("C-x n s" . my-narrow-to-subtree)
-         ("C-c 1" . my-toggle-narrowed))
-  :hook (org-mode . auto-revert-mode)
+         ("C-c 1" . my-toggle-narrowed)
+         ("C-M-q" . refill-mode))
+  :hook ((org-mode . auto-revert-mode)
+         (org-mode . refill-mode))
   :config
   (defun export-macro ()
     (interactive)
