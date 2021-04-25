@@ -36,12 +36,12 @@
   :group 'pomodoro
   :type 'integer)
 
-(defcustom pomodoro-break-time 5
+(defcustom pomodoro-break-time 10
   "Length of time in minutes for a break period"
   :group 'pomodoro
   :type 'integer)
 
-(defcustom pomodoro-long-break-time 15
+(defcustom pomodoro-long-break-time 25
   "Length of time in minutes for a long break period"
   :group 'pomodoro
   :type 'integer)

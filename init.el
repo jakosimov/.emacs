@@ -128,11 +128,6 @@
 ;;    :config
 ;;     (unicode-fonts-setup))
 
-(use-package emojify
-  :ensure t
-  :hook (after-init . global-emojify-mode)
-  :config
-  (setq emojify-composed-text-p nil)) ;; Fixar typ bullets i org-mode
 
 (add-to-list 'load-path "~/.emacs.d/pomodoro/")
 (require 'pomodoro)
@@ -166,8 +161,7 @@
   (defun setup-custom-doom-modeline ()
     (interactive)
     (doom-modeline-set-modeline 'my-doom-mode-line 'default))
-  (setup-custom-doom-modeline)
-  (add-hook 'after-init-hook 'global-emojify-mode-line-mode))
+  (setup-custom-doom-modeline))
 
 (use-package projectile
   :ensure t
@@ -313,6 +307,12 @@
   (if client-enabled
       (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))))
 
+(use-package emojify
+  :ensure t
+  :hook (after-init . global-emojify-mode)
+  :config
+  (emojify-set-emoji-styles '(github))) ;; Fixar typ bullets i org-mode
+
 (use-package doom-themes
   :ensure t
   :config
@@ -322,6 +322,10 @@
     (if is-evening dark-theme light-theme))
   (defun is-dark-theme ()
     (eq preferred-theme dark-theme))
+  (defun fix-emojis ()
+    (when (member "Noto Color Emoji" (font-family-list))
+      (set-fontset-font
+       t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)))
   (defvar source-code "Source Code Pro") ;; Om light font "Source Code Pro:demibold"
   (defvar deja-vu "DejaVu Sans Mono")
   (defvar preferred-face-font
@@ -392,6 +396,7 @@
       (add-hook 'after-make-frame-functions (lambda (frame)
                                               (load-preferred-theme))))
   (load-preferred-theme)
+  (fix-emojis)
   (doom-themes-org-config))
 
 (use-package org-journal
