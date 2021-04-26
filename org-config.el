@@ -134,6 +134,7 @@
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-return-follows-link t)
   (setq org-confirm-babel-evaluate nil)
+  (evil-define-key 'insert 'org-mode-map (kbd "C-:") 'emojify-insert-emoji)
   (setq org-M-RET-may-split-line nil)
   ;; (setq org-log-into-drawer t)
   (prettify-checkboxes)
