@@ -87,7 +87,6 @@
   :config
   (global-evil-surround-mode 1))
 
-
 (load "~/.emacs.d/org-config.el")
 
 (use-package magit
@@ -121,10 +120,10 @@
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-;; (use-package company
-;;   :ensure t
-;;   :config
-;;   (global-company-mode))
+(use-package company
+  :ensure t
+  :hook ((rust-mode elisp-mode) . company-mode)
+  :config)
 
 ;; (use-package unicode-fonts
 ;;    :ensure t
@@ -200,7 +199,7 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((typescript-mode c++-mode python-mode c-mode) . lsp)
+  :hook ((typescript-mode c++-mode python-mode c-mode rust-mode) . lsp)
   :bind (:map lsp-mode-map
               ("C-c d" . lsp-find-definition)
               ("C-c r" . lsp-ui-peek-find-references)
@@ -229,6 +228,9 @@
   :ensure t
   :config
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
+
+(use-package rust-mode
+  :ensure t)
 
 (use-package dante
   :ensure t
@@ -280,7 +282,8 @@
     (sp-local-pair 'org-mode "*" "*" :actions :rem)
     (sp-local-pair 'org-mode "*" nil :actions :rem)
     (sp-local-pair 'org-mode "=" "=" :actions :rem))
-  (configure-org-mode))
+  (configure-org-mode)
+  (sp-local-pair 'rust-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
 
 (use-package treemacs
   :ensure t
