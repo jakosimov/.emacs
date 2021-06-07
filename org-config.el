@@ -124,7 +124,7 @@
   (setq org-ellipsis ;; ⬎, ⤵, ↴, ⤵, ⤷, ⮷, ⮷, », ▼, ☟
         (if on-laptop
             " ↴"
-          " ⤵"))
+          " ⬎"))
   (setq org-file-apps
         '((auto-mode . emacs)
           ("\\.mm\\'" . default)
