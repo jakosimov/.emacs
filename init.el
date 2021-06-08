@@ -244,11 +244,6 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 
-(use-package haskell-mode
-  :ensure t
-  :config
-  (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
-
 (use-package rustic
   :ensure t
   :bind (:map rustic-mode-map
@@ -273,9 +268,11 @@
   ;; so that run C-c C-c C-r works without having to confirm
   (setq-local buffer-save-without-query t)))
 
-(defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm
-  (setq-local buffer-save-without-query t))
+(use-package haskell-mode
+  :ensure t
+  :config
+  (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+  (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state))
 
 (use-package dante
   :ensure t
@@ -289,7 +286,9 @@
   (put 'haskell-process-type 'safe-local-variable (lambda (_) t))
   (put 'dante-methods 'safe-local-variable (lambda (_) t))
 
-  (add-hook 'haskell-mode-hook 'dante-mode))
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  :config
+  (flycheck-add-next-checker 'haskell-dante '(info . haskell-hlint)))
 
 (if (and (not on-laptop) nil)
     (use-package direnv
