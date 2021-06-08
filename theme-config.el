@@ -21,7 +21,7 @@
   (defvar preferred-face-size
     (if on-laptop
         102
-      100)) ;; Om source-code: 107
+      102)) ;; Om source-code: 107
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
   (defun switch-theme (theme)

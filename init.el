@@ -66,19 +66,26 @@
     (interactive)
     (save-excursion (evil-open-above 1)
                     (evil-normal-state)))
+  (defun config-special-modes ()
+    (add-hook 'special-mode-hook
+              (lambda ()
+                (evil-emacs-state)
+                (if (not (or (equal major-mode 'vterm-mode)))
+                    (progn (evil-local-set-key 'emacs (kbd "j") 'evil-next-line)
+                           (evil-local-set-key 'emacs (kbd "k") 'evil-previous-line)
+                           (evil-local-set-key 'emacs (kbd "l") 'evil-forward-char)
+                           (evil-local-set-key 'emacs (kbd "h") 'evil-backward-char))))))
   (evil-define-key 'normal 'global (kbd "å") 'evil-first-non-blank)
   (with-eval-after-load 'evil-maps
     (evil-define-key 'normal 'global (kbd "RET") 'new-line-under)
     (evil-define-key 'normal 'global (kbd "<S-return>") 'new-line-above)
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
-  (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (add-hook 'dashboard-mode-hook (lambda ()
-                                   (evil-emacs-state)
                                    (add-hook 'evil-insert-state-entry-hook 'evil-emacs-state nil t)
                                    (add-hook 'evil-normal-state-entry-hook 'evil-emacs-state nil t)))
-  (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
-  (add-hook 'haskell-error-mode-hook 'evil-emacs-state)
+  (config-special-modes)
+  (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
   (evil-mode 1))
 
@@ -122,7 +129,7 @@
 
 (use-package company
   :ensure t
-  :hook ((rust-mode emacs-lisp-mode python-mode) . company-mode)
+  :hook ((emacs-lisp-mode rustic-mode python-mode) . company-mode)
   :config)
 
 ;; (use-package unicode-fonts
@@ -199,7 +206,7 @@
 
 (use-package lsp-mode
   :ensure t
-  :hook ((typescript-mode c++-mode python-mode c-mode rust-mode) . lsp)
+  :hook ((typescript-mode c++-mode python-mode c-mode rustic-mode) . lsp)
   :bind (:map lsp-mode-map
               ("C-c d" . lsp-find-definition)
               ("C-c r" . lsp-ui-peek-find-references)
@@ -218,20 +225,57 @@
     (vector "W503"))
   (defvar strict-python-warnings
     (vector "W503" "E303" "E302" "E305" "W391" "E226" "E111"))
-  (defvar lsp-ui-doc-enable nil)
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
   (if (not strict-python-enabled)
       (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
-    (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings)))
+    (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings))
+  :custom
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-server-display-inlay-hints t))
+
+(use-package lsp-ui
+  :ensure t
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  :custom
+  (lsp-ui-peek-always-show t)
+  (lsp-ui-sideline-show-hover t)
+  (lsp-ui-doc-enable nil))
 
 (use-package haskell-mode
   :ensure t
   :config
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode))
 
-(use-package rust-mode
-  :ensure t)
+(use-package rustic
+  :ensure t
+  :bind (:map rustic-mode-map
+              ("M-j" . lsp-ui-imenu)
+              ("M-?" . lsp-find-references)
+              ("C-c C-c l" . flycheck-list-errors)
+              ("C-c C-c a" . lsp-execute-code-action)
+              ("C-c C-c r" . lsp-rename)
+              ("C-c C-c q" . lsp-workspace-restart)
+              ("C-c C-c Q" . lsp-workspace-shutdown)
+              ("C-c C-c s" . lsp-rust-analyzer-status))
+  :config
+  ;; uncomment for less flashiness
+  ;; (setq lsp-eldoc-hook nil)
+  ;; (setq lsp-enable-symbol-highlighting nil)
+  ;; (setq lsp-signature-auto-activate nil)
+
+  ;; comment to disable rustfmt on save
+  ;; (setq rustic-format-on-save nil)
+  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
+  (defun rk/rustic-mode-hook ()
+  ;; so that run C-c C-c C-r works without having to confirm
+  (setq-local buffer-save-without-query t)))
+
+(defun rk/rustic-mode-hook ()
+  ;; so that run C-c C-c C-r works without having to confirm
+  (setq-local buffer-save-without-query t))
 
 (use-package dante
   :ensure t
@@ -247,14 +291,11 @@
 
   (add-hook 'haskell-mode-hook 'dante-mode))
 
-(if (not on-laptop)
+(if (and (not on-laptop) nil)
     (use-package direnv
       :ensure t
       :config
       (direnv-mode)))
-
-(use-package lsp-ui
-  :ensure t)
 
 (use-package lsp-treemacs
   :ensure t
@@ -284,7 +325,7 @@
     (sp-local-pair 'org-mode "*" nil :actions :rem)
     (sp-local-pair 'org-mode "=" "=" :actions :rem))
   (configure-org-mode)
-  (sp-local-pair 'rust-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
+  (sp-local-pair 'rustic-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
 
 (use-package treemacs
   :ensure t
@@ -321,7 +362,6 @@
   (emojify-set-emoji-styles '(github))
   (add-hook 'vterm-mode-hook (lambda ()
                                (emojify-mode -1)))) ;; Fixar typ bullets i org-mode
-
 
 (load "~/.emacs.d/theme-config")
 
