@@ -85,6 +85,7 @@
                                    (add-hook 'evil-insert-state-entry-hook 'evil-emacs-state nil t)
                                    (add-hook 'evil-normal-state-entry-hook 'evil-emacs-state nil t)))
   (config-special-modes)
+  (evil-define-key 'emacs magit-mode-map (kbd "C-k") 'magit-discard)
   (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
   (evil-mode 1))
