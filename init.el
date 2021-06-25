@@ -272,7 +272,8 @@
   :ensure t
   :config
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-  (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state))
+  (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
+  (setq haskell-interactive-popup-errors nil))
 
 (use-package dante
   :ensure t
