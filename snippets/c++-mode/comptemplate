@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: template
-# key: template
+# key: :template
 # --
 
 #include <bits/stdc++.h>

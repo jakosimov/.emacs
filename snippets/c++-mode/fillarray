@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: fillarray
-# key: fillarray
+# key: :fillarray
 # --
 
 vector<int> $1($2);

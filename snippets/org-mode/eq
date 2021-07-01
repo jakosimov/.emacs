@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: eq
-# key: eq
+# key: :eq
 # --
 \[
 $0
