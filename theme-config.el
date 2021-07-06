@@ -83,5 +83,6 @@
                                               (load-preferred-theme))))
   (load-preferred-theme)
   (fix-emojis)
-  (doom-themes-org-config))
+  (doom-themes-org-config)
+  (global-set-key (kbd "M-<f12>") 'invert-theme))
 

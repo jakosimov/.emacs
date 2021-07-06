@@ -358,11 +358,10 @@
 
 (use-package emojify
   :ensure t
-  :hook (after-init . global-emojify-mode)
   :config
   (emojify-set-emoji-styles '(github))
-  (add-hook 'vterm-mode-hook (lambda ()
-                               (emojify-mode -1)))) ;; Fixar typ bullets i org-mode
+  (add-hook 'prog-mode-hook 'emojify-mode)
+  (add-hook 'text-mode-hook 'emojify-mode)) ;; Fixar typ bullets i org-mode
 
 (load "~/.emacs.d/theme-config")
 
