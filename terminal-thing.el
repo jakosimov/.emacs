@@ -131,9 +131,14 @@
       (ivy-switch-buffer)
     (ivy-switch-terminal-buffer)))
 
+(defun toggle-dedicated ()
+  (interactive)
+  (set-window-dedicated-p (selected-window) (not (window-dedicated-p))))
+
 (use-package vterm
   :ensure t
   :bind (:map vterm-mode-map
+              ("C-x d" . toggle-dedicated)
               ("C-x b" . from-terminal-switch-buffer)))
 
 (provide 'terminal-thing)
