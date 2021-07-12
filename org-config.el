@@ -16,6 +16,13 @@
     (interactive)
     (insert "#+BEGIN_EXPORT latex\n")
     (save-excursion (insert "\n#+END_EXPORT")))
+  (defun latex-macro ()
+    (interactive)
+    (insert "\\(")
+    (save-excursion (insert "\\)")))
+  (add-hook 'org-mode-hook (lambda ()
+                             (local-set-key (kbd "¨") 'latex-macro)))
+
   (defun prettify-checkboxes ()
     (add-hook 'org-mode-hook (lambda ()
                                "Beautify Org Checkbox Symbol"
