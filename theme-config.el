@@ -8,6 +8,10 @@
     (if is-evening dark-theme light-theme))
   (defun is-dark-theme ()
     (eq preferred-theme dark-theme))
+  (defun latex-image-directory-name ()
+    (if (is-dark-theme) "dark-ltximg/" "light-ltximg/"))
+  (defun set-preferred-latex-image-directory ()
+    (setq org-preview-latex-image-directory (latex-image-directory-name)))
   (defun fix-emojis ()
     (when (member "Noto Color Emoji" (font-family-list))
       (set-fontset-font
@@ -77,12 +81,13 @@
     (if (eq preferred-theme dark-theme)
         (setq preferred-theme light-theme)
       (setq preferred-theme dark-theme))
-    (load-preferred-theme))
+    (load-preferred-theme)
+    (set-preferred-latex-image-directory))
   (if client-enabled
       (add-hook 'after-make-frame-functions (lambda (frame)
                                               (load-preferred-theme))))
   (load-preferred-theme)
   (fix-emojis)
   (doom-themes-org-config)
-  (global-set-key (kbd "M-<f12>") 'invert-theme))
-
+  (global-set-key (kbd "M-<f12>") 'invert-theme)
+  (set-preferred-latex-image-directory))

@@ -20,3 +20,5 @@ places
 emojis/
 var/
 eln-cache/
+racket-mode/
+projects

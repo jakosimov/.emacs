@@ -31,6 +31,7 @@
          ("C-§" . projectile-previous-project-buffer)
          ("M-§" . projectile-next-project-buffer))
   :config
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
   (menu-bar-mode -1) ;; The ordinary menu bar.
@@ -128,9 +129,21 @@
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
+(use-package racket-mode
+  :ensure t
+  :config
+  (add-hook 'racket-mode-hook 'racket-xp-mode)
+  (defun sm-greek-lambda ()
+       (font-lock-add-keywords nil `(("\\<lambda\\>"
+           (0 (progn (compose-region (match-beginning 0) (match-end 0)
+           ,(make-char 'greek-iso8859-7 107))
+           nil))))))
+   (add-hook 'racket-mode-hook 'sm-greek-lambda))
+
+
 (use-package company
   :ensure t
-  :hook ((emacs-lisp-mode rustic-mode python-mode) . company-mode)
+  :hook ((emacs-lisp-mode rustic-mode python-mode racket-mode racket-repl-mode) . company-mode)
   :config)
 
 ;; (use-package unicode-fonts
@@ -364,6 +377,11 @@
   (add-hook 'text-mode-hook 'emojify-mode)) ;; Fixar typ bullets i org-mode
 
 (load "~/.emacs.d/theme-config")
+
+(use-package vi-tilde-fringe
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
 ;; (use-package ivy-posframe
 ;;   :ensure t
