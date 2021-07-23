@@ -221,5 +221,29 @@
                  (setq org-latex-fragment-last nil)))))
       (error nil)))
   (add-hook 'post-command-hook 'org-latex-fragment-toggle-auto)
+  (setq system-time-locale "C")
   (setq org-latex-fragment-toggle-helper (byte-compile 'org-latex-fragment-toggle-helper))
   (setq org-latex-fragment-toggle-auto (byte-compile 'org-latex-fragment-toggle-auto)))
+
+(use-package org-journal
+  :ensure t
+  :config
+  (setq org-journal-file-type 'monthly)
+  (setq org-journal-dir "~/Sync/notes/journal/")
+  (global-set-key (kbd "C-c å") (lambda ()
+                                  (interactive)
+                                  (org-journal-new-entry 1)))
+  (global-set-key (kbd "C-c C-å") (lambda ()
+                                  (interactive)
+                                  (org-journal-new-entry nil)
+                                  (evil-insert-state)))
+  (add-hook 'org-journal-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-s") (lambda ()
+                                           (interactive)
+                                           (org-schedule nil "+0d")))))
+  (setq org-extend-today-until 4
+        org-journal-date-format "%a, %d-%m-%Y"
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-time-format ""))
+
