@@ -31,7 +31,13 @@
          ("C-§" . projectile-previous-project-buffer)
          ("M-§" . projectile-next-project-buffer))
   :config
+  (defun sm-greek-lambda ()
+       (font-lock-add-keywords nil `(("\\<lambda\\>"
+           (0 (progn (compose-region (match-beginning 0) (match-end 0)
+           ,(make-char 'greek-iso8859-7 107))
+                     nil))))))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'emacs-lisp-mode-hook 'sm-greek-lambda)
   (tool-bar-mode -1) ;; The thing with big icons.
   (scroll-bar-mode -1)
   (menu-bar-mode -1) ;; The ordinary menu bar.
@@ -77,6 +83,12 @@
                            (evil-local-set-key 'emacs (kbd "l") 'evil-forward-char)
                            (evil-local-set-key 'emacs (kbd "h") 'evil-backward-char))))))
   (evil-define-key 'normal 'global (kbd "å") 'evil-first-non-blank)
+  (evil-define-key 'normal 'global (kbd "SPC") (lambda ()
+                                                 (interactive)
+                                                 (insert " ")))
+  (evil-define-key 'normal 'global (kbd "<backspace>") (lambda ()
+                                                 (interactive)
+                                                 (delete-backward-char 1)))
   (with-eval-after-load 'evil-maps
     (evil-define-key 'normal 'global (kbd "RET") 'new-line-under)
     (evil-define-key 'normal 'global (kbd "<S-return>") 'new-line-above)
@@ -133,17 +145,12 @@
   :ensure t
   :config
   (add-hook 'racket-mode-hook 'racket-xp-mode)
-  (defun sm-greek-lambda ()
-       (font-lock-add-keywords nil `(("\\<lambda\\>"
-           (0 (progn (compose-region (match-beginning 0) (match-end 0)
-           ,(make-char 'greek-iso8859-7 107))
-           nil))))))
-   (add-hook 'racket-mode-hook 'sm-greek-lambda))
-
+  (add-hook 'racket-mode-hook 'sm-greek-lambda))
 
 (use-package company
   :ensure t
-  :hook ((emacs-lisp-mode rustic-mode python-mode racket-mode racket-repl-mode) . company-mode)
+  :hook ((emacs-lisp-mode rustic-mode python-mode racket-mode racket-repl-mode
+                          haskell-mode haskell-interactive-mode) . company-mode)
   :config)
 
 ;; (use-package unicode-fonts
@@ -223,7 +230,7 @@
   :hook ((typescript-mode c++-mode python-mode c-mode rustic-mode) . lsp)
   :bind (:map lsp-mode-map
               ("C-c d" . lsp-find-definition)
-              ("C-c r" . lsp-ui-peek-find-references)
+              ("C-c r" . lsp-find-references)
               ("C-c h" . lsp-ui-doc-show)
               ("C-c C-d" . lsp-find-declaration)
               ("C-c e" . lsp-treemacs-errors-list)
@@ -285,6 +292,13 @@
 (use-package haskell-mode
   :ensure t
   :config
+  (defvar is-dante-project nil)
+  (defun enable-haskell-check ()
+    (if is-dante-project
+        (dante-mode)
+      (lsp)))
+  (add-hook 'haskell-mode-hook 'enable-haskell-check)
+  (add-hook 'haskell-literate-mode-hook 'enable-haskell-check)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
   (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
   (setq haskell-interactive-popup-errors nil))
@@ -293,17 +307,20 @@
   :ensure t
   :after haskell-mode
   :commands 'dante-mode
-  :bind (:map haskell-mode-map
+  :bind (:map dante-mode-map
               ("C-c d" . xref-find-definitions))
   :init
-  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  (add-hook 'dante-mode-hook 'flycheck-mode)
   (put 'dante-repl-command-line 'safe-local-variable (lambda (_) t))
   (put 'haskell-process-type 'safe-local-variable (lambda (_) t))
   (put 'dante-methods 'safe-local-variable (lambda (_) t))
 
-  (add-hook 'haskell-mode-hook 'dante-mode)
   :config
   (flycheck-add-next-checker 'haskell-dante '(info . haskell-hlint)))
+
+(use-package lsp-haskell
+  :ensure t)
+
 
 (if (and (not on-laptop) nil)
     (use-package direnv
