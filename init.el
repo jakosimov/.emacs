@@ -241,6 +241,7 @@
               ("M-+" . lsp-ui-sideline-toggle-symbols-info))
   :config
   ;; (defvar lsp-clients-clangd-args '("-cross-file-rename"))
+  (add-hook 'xref--xref-buffer-mode-hook 'evil-emacs-state)
   (defvar strict-python-enabled nil)
   (defvar incorrect-python-warnings
     (vector "W503"))
