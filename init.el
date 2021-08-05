@@ -302,7 +302,9 @@
   (add-hook 'haskell-literate-mode-hook 'enable-haskell-check)
   (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
   (add-hook 'haskell-interactive-mode-hook 'evil-emacs-state)
-  (setq haskell-interactive-popup-errors nil))
+  (setq haskell-interactive-popup-errors nil)
+  :custom
+  (haskell-interactive-prompt "λ "))
 
 (use-package dante
   :ensure t
