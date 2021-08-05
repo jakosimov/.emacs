@@ -85,7 +85,7 @@
   (evil-define-key 'normal 'global (kbd "å") 'evil-first-non-blank)
   (evil-define-key 'normal 'global (kbd "SPC") (lambda ()
                                                  (interactive)
-                                                 (insert " ")))
+                                                 (save-excursion (insert " "))))
   (evil-define-key 'normal 'global (kbd "<backspace>") (lambda ()
                                                  (interactive)
                                                  (delete-backward-char 1)))
