@@ -83,7 +83,7 @@
                            (evil-local-set-key 'emacs (kbd "l") 'evil-forward-char)
                            (evil-local-set-key 'emacs (kbd "h") 'evil-backward-char))))))
   (evil-define-key 'normal 'global (kbd "å") 'evil-first-non-blank)
-  (evil-define-key 'normal 'global (kbd "SPC") (lambda ()
+  (evil-define-key 'normal 'global (kbd "C-SPC") (lambda ()
                                                  (interactive)
                                                  (save-excursion (insert " "))))
   (evil-define-key 'normal 'global (kbd "<backspace>") (lambda ()
@@ -219,8 +219,10 @@
 
 (use-package imenu-anywhere
   :ensure t
-  :bind (:map prog-mode-map
-              ("C-c s" . imenu-anywhere)))
+  :config
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC p") 'imenu-anywhere)
+  (setq-default imenu-anywhere-preprocess-entry-function
+                (lambda (entry parent-name) entry)))
 
 (use-package ccls
   :ensure t)
@@ -229,7 +231,7 @@
   :ensure t
   :hook ((typescript-mode c++-mode python-mode c-mode rustic-mode) . lsp)
   :bind (:map lsp-mode-map
-              ("C-c d" . lsp-find-definition)
+              ("M-j" . lsp-ui-imenu)
               ("C-c r" . lsp-find-references)
               ("C-c h" . lsp-ui-doc-show)
               ("C-c C-d" . lsp-find-declaration)
@@ -249,6 +251,7 @@
     (vector "W503" "E303" "E302" "E305" "W391" "E226" "E111"))
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
+  (evil-define-key 'normal 'lsp-mode-map (kbd "M-.") 'lsp-find-definition)
   (if (not strict-python-enabled)
       (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
     (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings))
@@ -269,8 +272,6 @@
 (use-package rustic
   :ensure t
   :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
               ("C-c C-c l" . flycheck-list-errors)
               ("C-c C-c a" . lsp-execute-code-action)
               ("C-c C-c r" . lsp-rename)
@@ -403,11 +404,22 @@
   :config
   (add-hook 'prog-mode-hook 'vi-tilde-fringe-mode))
 
-;; (use-package ivy-posframe
-;;   :ensure t
-;;   :config
-;;   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-;;   (ivy-posframe-mode 1))
+(use-package git-gutter-fringe
+  :ensure t
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224]
+    nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240]
+    nil nil 'bottom)
+  (global-git-gutter-mode))
+
+(use-package ivy-posframe
+  :ensure t
+  :config
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (ivy-posframe-mode 1))
 
 (use-package emacs
   :bind (("C-c C-j" . toggle-terminal-vertical)))

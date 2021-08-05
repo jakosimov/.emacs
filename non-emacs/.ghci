@@ -1,4 +1,4 @@
 :set prompt "\ESC[32mλ \ESC[m"
-:def search return . (":! hoogle " ++)
+:def hoogle return . (":! hoogle " ++)
 :def clr \_ -> return ":! clear"
 :set -fwarn-incomplete-patterns
