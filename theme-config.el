@@ -1,3 +1,33 @@
+(use-package doom-modeline
+  :ensure t
+  :init ;; Run `all-the-icons-install-fonts' as well
+  (if on-laptop
+      (setq doom-modeline-height 38)
+    (setq doom-modeline-height 31))
+  (doom-modeline-mode 1)
+  (if client-enabled
+      (add-hook 'after-make-frame-functions
+                #'enable-doom-modeline-icons))
+  :config
+  (defun enable-doom-modeline-icons (_frame) ;; For emacsclient
+    (setq doom-modeline-icon t))
+  (setq doom-modeline-percent-position nil)
+
+  (doom-modeline-def-segment doom-pomodoro
+    (concat
+     (doom-modeline-spc)
+     (propertize pomodoro-mode-line-string 'face
+                 'doom-modeline-urgent)
+     (doom-modeline-spc)))
+
+  (doom-modeline-def-modeline 'my-doom-mode-line
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info doom-pomodoro)
+    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info major-mode process checker vcs " "))
+
+  (defun setup-custom-doom-modeline ()
+    (interactive)
+    (doom-modeline-set-modeline 'my-doom-mode-line 'default))
+  (setup-custom-doom-modeline))
 
 (use-package doom-themes
   :ensure t

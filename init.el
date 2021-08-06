@@ -122,11 +122,6 @@
   (ivy-mode 1)
   (setq ivy-display-style 'fancy))
 
-;; (use-package swiper
-;;   :ensure t
-;;   :config
-;;   (global-set-key (kbd "C-s") 'swiper))
-
 (use-package undo-tree
   :ensure t
   :config
@@ -139,7 +134,8 @@
   :ensure t
   :hook ((emacs-lisp-mode) . flycheck-mode)
   :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  (setq flycheck-idle-change-delay 1.0))
 
 (use-package racket-mode
   :ensure t
@@ -153,45 +149,8 @@
                           haskell-mode haskell-interactive-mode) . company-mode)
   :config)
 
-;; (use-package unicode-fonts
-;;    :ensure t
-;;    :config
-;;     (unicode-fonts-setup))
-
-
 (add-to-list 'load-path "~/.emacs.d/pomodoro/")
 (require 'pomodoro)
-
-(use-package doom-modeline
-  :ensure t
-  :init ;; Run `all-the-icons-install-fonts' as well
-  (if on-laptop
-      (setq doom-modeline-height 38)
-    (setq doom-modeline-height 31))
-  (doom-modeline-mode 1)
-  (if client-enabled
-      (add-hook 'after-make-frame-functions
-                #'enable-doom-modeline-icons))
-  :config
-  (defun enable-doom-modeline-icons (_frame) ;; For emacsclient
-    (setq doom-modeline-icon t))
-  (setq doom-modeline-percent-position nil)
-
-  (doom-modeline-def-segment doom-pomodoro
-    (concat
-     (doom-modeline-spc)
-     (propertize pomodoro-mode-line-string 'face
-                 'doom-modeline-urgent)
-     (doom-modeline-spc)))
-
-  (doom-modeline-def-modeline 'my-doom-mode-line
-    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info doom-pomodoro)
-    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info major-mode process checker vcs " "))
-
-  (defun setup-custom-doom-modeline ()
-    (interactive)
-    (doom-modeline-set-modeline 'my-doom-mode-line 'default))
-  (setup-custom-doom-modeline))
 
 (use-package projectile
   :ensure t
@@ -200,7 +159,7 @@
               ("C-c b" . projectile-switch-to-buffer))
   :config
   (projectile-mode 1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (evil-define-key 'normal 'projectile-mode-map (kbd "SPC p") 'projectile-command-map)
   (setq projectile-completion-system 'ivy))
 
 (use-package org-superstar
@@ -220,7 +179,7 @@
 (use-package imenu-anywhere
   :ensure t
   :config
-  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC p") 'imenu-anywhere)
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC d") 'imenu-anywhere)
   (setq-default imenu-anywhere-preprocess-entry-function
                 (lambda (entry parent-name) entry)))
 
@@ -231,32 +190,32 @@
   :ensure t
   :hook ((typescript-mode c++-mode python-mode c-mode rustic-mode) . lsp)
   :bind (:map lsp-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("C-c r" . lsp-find-references)
-              ("C-c h" . lsp-ui-doc-show)
-              ("C-c C-d" . lsp-find-declaration)
-              ("C-c e" . lsp-treemacs-errors-list)
-              ("C-c g" . (lambda ()
-                           (interactive)
-                           (let ((n (buffer-size)))
-                             (lsp-on-change 0 n n))))
               ("M-+" . lsp-ui-sideline-toggle-symbols-info))
   :config
   ;; (defvar lsp-clients-clangd-args '("-cross-file-rename"))
   (add-hook 'xref--xref-buffer-mode-hook 'evil-emacs-state)
-  (defvar strict-python-enabled nil)
-  (defvar incorrect-python-warnings
-    (vector "W503"))
-  (defvar strict-python-warnings
-    (vector "W503" "E303" "E302" "E305" "W391" "E226" "E111"))
+  (defun setup-python ()
+    (defvar strict-python-enabled nil)
+    (defvar incorrect-python-warnings
+      (vector "W503"))
+    (defvar strict-python-warnings
+      (vector "W503" "E303" "E302" "E305" "W391" "E226" "E111"))
+    (if (not strict-python-enabled)
+        (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
+      (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings)))
   (setq lsp-enable-symbol-highlighting nil)
   (setq lsp-enable-snippet nil)
   (evil-define-key 'normal 'lsp-mode-map (kbd "M-.") 'lsp-find-definition)
-  (if (not strict-python-enabled)
-      (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
-    (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings))
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC l") 'lsp-ui-imenu)
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC h") 'lsp-ui-doc-glance)
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC e") 'lsp-treemacs-errors-list)
+  (evil-define-key 'normal 'lsp-mode-map (kbd "SPC SPC") (lambda ()
+                                                           (interactive)
+                                                           (let ((n (buffer-size)))
+                                                             (lsp-on-change 0 n n))))
+  (setup-python)
   :custom
-  (lsp-idle-delay 0.6)
+  (lsp-idle-delay 1.0)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-rust-analyzer-server-display-inlay-hints t))
 
@@ -265,9 +224,12 @@
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   :custom
+  (lsp-ui-sideline-delay 1.0)
+  (lsp-ui-doc-delay 0.1)
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable nil)
+  (lsp-ui-doc-position 'at-point))
 
 (use-package rustic
   :ensure t
@@ -279,13 +241,6 @@
               ("C-c C-c Q" . lsp-workspace-shutdown)
               ("C-c C-c s" . lsp-rust-analyzer-status))
   :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
-
-  ;; comment to disable rustfmt on save
-  ;; (setq rustic-format-on-save nil)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
   (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm
@@ -324,7 +279,6 @@
 
 (use-package lsp-haskell
   :ensure t)
-
 
 (if (and (not on-laptop) nil)
     (use-package direnv
