@@ -380,7 +380,15 @@
   (setq ivy-posframe-display-functions-alist
         '((swiper . ivy-posframe-display-at-window-bottom-left)
           (t      . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-parameters
+        '((left-fringe . 24)
+          (right-fringe . 24)))
   (ivy-posframe-mode 1))
+
+(use-package counsel
+  :ensure t
+  :config
+  (counsel-mode))
 
 (use-package emacs
   :bind (("C-c C-j" . toggle-terminal-vertical)))

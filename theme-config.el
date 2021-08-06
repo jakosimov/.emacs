@@ -59,22 +59,20 @@
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
   (defun set-ivy-posframe-faces ()
-    (setq ivy-posframe-border-width 2)
+    ;; (setq ivy-posframe-border-width 2)
+    (setq ivy-posframe-border-width 1)
     (with-eval-after-load 'ivy-posframe
-      (set-face-attribute 'ivy-posframe-border nil
-                          :background "black")
       (if t
-          (let ((orig (face-attribute 'default :background))
-                (alpha 0.3)
-                (blue "#00005F"))
-            (if (is-dark-theme)
-                (set-face-attribute 'ivy-posframe nil
-                                    :background (doom-blend orig blue 0.9))
-              (set-face-attribute 'ivy-posframe nil
-                                  :background (doom-blend orig blue 0.9)))))
-
-
-      ))
+          (let* ((orig (face-attribute 'default :background))
+                 ;; (background-color (doom-blend orig "#0000FF" 0.9))
+                 ;; (border-color (face-attribute 'minibuffer-prompt :foreground))
+                 (border-color (if (is-dark-theme) "white" "black"))
+                 )
+            (set-face-attribute 'ivy-posframe-border nil
+                                :background border-color)
+            (set-face-attribute 'ivy-posframe nil
+                                :background orig)))
+))
   (defun switch-theme (theme)
     (interactive)
     (mapc #'disable-theme custom-enabled-themes)
