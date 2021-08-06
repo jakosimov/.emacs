@@ -58,6 +58,15 @@
       102)) ;; Om source-code: 107
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
+  (defun set-ivy-selection-face ()
+    (with-eval-after-load 'ivy-posframe
+          (let* ((orig (face-attribute 'ivy-posframe :background))
+                 (alpha 0.2)
+                 (new-color (if (is-dark-theme)
+                                (doom-lighten orig alpha)
+                              (doom-darken orig alpha))))
+            (set-face-attribute 'ivy-current-match nil
+                                :background new-color))))
   (defun set-ivy-posframe-faces ()
     ;; (setq ivy-posframe-border-width 2)
     (setq ivy-posframe-border-width 1)
@@ -130,7 +139,8 @@
       (setq preferred-theme dark-theme))
     (load-preferred-theme)
     (set-preferred-latex-image-directory)
-    (set-ivy-posframe-faces))
+    (set-ivy-posframe-faces)
+    (set-ivy-selection-face))
   (if client-enabled
       (add-hook 'after-make-frame-functions (lambda (frame)
                                               (load-preferred-theme))))
@@ -139,4 +149,5 @@
   (doom-themes-org-config)
   (global-set-key (kbd "M-<f12>") 'invert-theme)
   (set-preferred-latex-image-directory)
-  (set-ivy-posframe-faces))
+  (set-ivy-posframe-faces)
+  (set-ivy-selection-face))

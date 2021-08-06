@@ -94,6 +94,7 @@
     (evil-define-key 'normal 'global (kbd "<S-return>") 'new-line-above)
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
+  (evil-define-key 'normal 'emacs-lisp-mode-map (kbd "C-c C-c") 'eval-buffer)
   (add-hook 'dashboard-mode-hook (lambda ()
                                    (add-hook 'evil-insert-state-entry-hook 'evil-emacs-state nil t)
                                    (add-hook 'evil-normal-state-entry-hook 'evil-emacs-state nil t)))
