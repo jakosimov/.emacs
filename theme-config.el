@@ -58,6 +58,23 @@
       102)) ;; Om source-code: 107
   (set-face-attribute 'default nil :font preferred-face-font) ;; Source Code Pro, DejaVu Sans Mono
   (set-face-attribute 'default nil :height preferred-face-size)
+  (defun set-ivy-posframe-faces ()
+    (setq ivy-posframe-border-width 2)
+    (with-eval-after-load 'ivy-posframe
+      (set-face-attribute 'ivy-posframe-border nil
+                          :background "black")
+      (if t
+          (let ((orig (face-attribute 'default :background))
+                (alpha 0.3)
+                (blue "#00005F"))
+            (if (is-dark-theme)
+                (set-face-attribute 'ivy-posframe nil
+                                    :background (doom-blend orig blue 0.9))
+              (set-face-attribute 'ivy-posframe nil
+                                  :background (doom-blend orig blue 0.9)))))
+
+
+      ))
   (defun switch-theme (theme)
     (interactive)
     (mapc #'disable-theme custom-enabled-themes)
@@ -106,14 +123,16 @@
     (fix-org-blocks)
     (fix-org-headlines)
     (fix-doom-dracula)
-    (fix-light-themes))
+    (fix-light-themes)
+    (set-ivy-posframe-faces))
   (defun invert-theme ()
     (interactive)
     (if (eq preferred-theme dark-theme)
         (setq preferred-theme light-theme)
       (setq preferred-theme dark-theme))
     (load-preferred-theme)
-    (set-preferred-latex-image-directory))
+    (set-preferred-latex-image-directory)
+    (set-ivy-posframe-faces))
   (if client-enabled
       (add-hook 'after-make-frame-functions (lambda (frame)
                                               (load-preferred-theme))))
@@ -121,4 +140,5 @@
   (fix-emojis)
   (doom-themes-org-config)
   (global-set-key (kbd "M-<f12>") 'invert-theme)
-  (set-preferred-latex-image-directory))
+  (set-preferred-latex-image-directory)
+  (set-ivy-posframe-faces))

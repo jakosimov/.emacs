@@ -122,6 +122,11 @@
   (ivy-mode 1)
   (setq ivy-display-style 'fancy))
 
+(use-package swiper
+  :ensure t
+  :config
+  (evil-define-key 'normal 'global (kbd "SPC s") 'swiper))
+
 (use-package undo-tree
   :ensure t
   :config
@@ -372,7 +377,9 @@
 (use-package ivy-posframe
   :ensure t
   :config
-  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-display-functions-alist
+        '((swiper . ivy-posframe-display-at-window-bottom-left)
+          (t      . ivy-posframe-display-at-frame-center)))
   (ivy-posframe-mode 1))
 
 (use-package emacs
