@@ -29,6 +29,7 @@
     (if dir
         (cd dir))
     (vterm)
+    (evil-emacs-state)
     (rename-buffer (concat mini-term-name "<" name ">") t)
     (if (not term-mode-line-enabled)
         (setq mode-line-format nil))))

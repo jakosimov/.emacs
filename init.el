@@ -94,13 +94,12 @@
     (evil-define-key 'normal 'global (kbd "<S-return>") 'new-line-above)
     (evil-define-key 'normal org-mode-map (kbd "RET") nil)
     (define-key evil-normal-state-map (kbd "M-p") 'evil-paste-pop))
-  (evil-define-key 'normal 'emacs-lisp-mode-map (kbd "C-c C-c") 'eval-buffer)
+  (evil-define-key 'normal emacs-lisp-mode-map (kbd "C-c C-c") 'eval-buffer)
   (add-hook 'dashboard-mode-hook (lambda ()
                                    (add-hook 'evil-insert-state-entry-hook 'evil-emacs-state nil t)
                                    (add-hook 'evil-normal-state-entry-hook 'evil-emacs-state nil t)))
   (config-special-modes)
   (evil-define-key 'emacs magit-mode-map (kbd "C-k") 'magit-discard)
-  (add-hook 'vterm-mode-hook 'evil-emacs-state)
   (evil-set-undo-system 'undo-tree)
   (evil-mode 1))
 
@@ -126,7 +125,8 @@
 (use-package swiper
   :ensure t
   :config
-  (evil-define-key 'normal 'global (kbd "SPC s") 'swiper))
+  (evil-define-key 'normal 'global (kbd "SPC s") 'swiper)
+  (add-hook 'special-mode-hook (lambda () (local-set-key (kbd "C-s") 'swiper))))
 
 (use-package undo-tree
   :ensure t
@@ -209,7 +209,7 @@
     (if (not strict-python-enabled)
         (defvar lsp-pyls-plugins-pycodestyle-ignore strict-python-warnings)
       (defvar lsp-pyls-plugins-pycodestyle-ignore incorrect-python-warnings)))
-  (setq lsp-enable-symbol-highlighting nil)
+  (setq lsp-enable-symbol-highlighting t)
   (setq lsp-enable-snippet nil)
   (evil-define-key 'normal 'lsp-mode-map (kbd "M-.") 'lsp-find-definition)
   (evil-define-key 'normal 'lsp-mode-map (kbd "SPC l") 'lsp-ui-imenu)
@@ -221,9 +221,8 @@
                                                              (lsp-on-change 0 n n))))
   (setup-python)
   :custom
-  (lsp-idle-delay 1.0)
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-rust-analyzer-server-display-inlay-hints t))
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 1.0))
 
 (use-package lsp-ui
   :ensure t
@@ -249,8 +248,13 @@
   :config
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
   (defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm
-  (setq-local buffer-save-without-query t)))
+    ;; so that run C-c C-c C-r works without having to confirm
+    (setq-local buffer-save-without-query t))
+  :custom
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-rust-analyzer-display-parameter-hints t)
+  (lsp-rust-analyzer-display-chaining-hints t))
 
 (use-package haskell-mode
   :ensure t
